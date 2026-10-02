@@ -1,3 +1,26 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from '@/auth/AuthProvider'
+import { ProtectedRoute } from '@/auth/ProtectedRoute'
+import AuthPage from '@/pages/auth/AuthPage'
+import AppPlaceholder from '@/pages/AppPlaceholder'
+
 export default function App() {
-  return <main>Ascend</main>
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<AuthPage mode="login" />} />
+          <Route path="/signup" element={<AuthPage mode="signup" />} />
+          <Route path="/forgot-password" element={<AuthPage mode="forgot" />} />
+          <Route path="/reset-password" element={<AuthPage mode="reset" />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<AppPlaceholder />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  )
 }

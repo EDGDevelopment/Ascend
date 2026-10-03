@@ -32,7 +32,7 @@ export const mockDashboard: DashboardData = {
     {
       id: 'opp-weekday',
       title: 'Weekday demand is under potential',
-      summary: 'Monday to Thursday sales sit 18% below your weekend-adjusted level.',
+      summary: 'Mon to Thu sales are 18% below your weekend-adjusted level.',
       detail:
         'The model compares each weekday with its own history and with the weekend lift you already achieve. Tuesday and Wednesday afternoons show the largest gap. A weekday lunch offer or a loyalty prompt in that window is the likeliest lever.',
       area: 'Revenue',
@@ -44,7 +44,7 @@ export const mockDashboard: DashboardData = {
     {
       id: 'opp-inventory',
       title: 'Inventory turnover has slowed',
-      summary: 'Turnover is 16% below your historical pattern while your best category holds demand.',
+      summary: 'Turnover is 16% below your usual pattern.',
       detail:
         'Slower-moving items are being restocked at the same rate as fast sellers. Reducing order quantities on the five slowest SKUs would free working capital without affecting your top category.',
       area: 'Inventory',
@@ -56,7 +56,7 @@ export const mockDashboard: DashboardData = {
     {
       id: 'opp-payroll',
       title: 'Payroll share is rising',
-      summary: 'Labor cost grew 3.1% against revenue growth of 8.4% in the same period.',
+      summary: 'Labor grew 3.1% while revenue grew 8.4%.',
       detail:
         'Scheduled hours are flat on low-traffic mornings. Shifting two shifts toward the afternoon peak would hold coverage where demand is highest.',
       area: 'Costs',
@@ -68,7 +68,7 @@ export const mockDashboard: DashboardData = {
     {
       id: 'opp-cash',
       title: 'Cash buffer can fund growth',
-      summary: 'Projected cash flow stays positive through December with a comfortable margin.',
+      summary: 'Cash flow stays positive through December.',
       detail:
         'Even at the low end of the forecast range, cash flow remains above your 60 day operating cost. There is room to invest in the weekday offer without stressing liquidity.',
       area: 'Cash flow',
@@ -80,7 +80,7 @@ export const mockDashboard: DashboardData = {
     {
       id: 'opp-repeat',
       title: 'Repeat customers are flattening',
-      summary: 'Returning customer visits are up only 0.8% while new customers grew 6%.',
+      summary: 'Returning visits are up 0.8%, new customers 6%.',
       detail:
         'Acquisition is healthy but retention has stalled. A simple punch-card or email follow-up for first-time visitors targets the gap.',
       area: 'Customers',

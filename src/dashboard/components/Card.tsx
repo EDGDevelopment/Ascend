@@ -9,11 +9,12 @@ interface CardProps {
   padded?: boolean
 }
 
+/** Elevation is the 1px border alone. No shadow on top of it. */
 export function Card({ title, subtitle, action, children, className = '', padded = true }: CardProps) {
   return (
-    <section className={`rounded-card border border-line bg-surface shadow-card ${className}`}>
+    <section className={`rounded-card border border-line bg-surface ${className}`}>
       {(title || action) && (
-        <header className="flex flex-wrap items-start justify-between gap-3 px-5 pb-0 pt-5">
+        <header className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
           <div>
             {title && <h2 className="text-[15px] font-semibold">{title}</h2>}
             {subtitle && <p className="mt-0.5 text-[13px] text-ink-faint">{subtitle}</p>}

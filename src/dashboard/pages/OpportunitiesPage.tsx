@@ -23,52 +23,44 @@ export default function OpportunitiesPage() {
   const total = items.filter((o) => o.status !== 'Done').reduce((s, o) => s + o.monthlyValue, 0)
 
   return (
-    <div className="mx-auto max-w-[960px] space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <p className="max-w-xl text-sm text-ink-muted">
-          Findings the model translated into actions. Each one is sized by estimated monthly value and the model's
-          confidence in the pattern behind it.
-        </p>
-        <div className="text-right">
-          <p className="tabular text-2xl font-semibold text-accent">{formatUsd(total)}</p>
-          <p className="text-xs text-ink-faint">open value per month</p>
+    <div className="mx-auto max-w-[960px] space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div role="tablist" aria-label="Filter by status" className="inline-flex rounded-lg bg-sunken p-1">
+          {filters.map((f) => (
+            <button
+              key={f}
+              role="tab"
+              type="button"
+              aria-selected={filter === f}
+              onClick={() => setFilter(f)}
+              className={`rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
+                filter === f ? 'bg-surface text-ink' : 'text-ink-muted hover:text-ink'
+              }`}
+            >
+              {f}
+            </button>
+          ))}
         </div>
-      </div>
-
-      <div role="tablist" aria-label="Filter by status" className="inline-flex rounded-lg bg-sunken p-1">
-        {filters.map((f) => (
-          <button
-            key={f}
-            role="tab"
-            type="button"
-            aria-selected={filter === f}
-            onClick={() => setFilter(f)}
-            className={`rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-              filter === f ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
-            }`}
-          >
-            {f}
-          </button>
-        ))}
+        <p className="text-sm text-ink-muted">
+          <span className="tabular text-lg font-semibold text-accent">{formatUsd(total)}</span> open per month
+        </p>
       </div>
 
       <div className="space-y-3">
         {items.length === 0 && (
-          <p className="rounded-card border border-dashed border-line p-8 text-center text-sm text-ink-faint">
-            Nothing here yet.
-          </p>
+          <p className="rounded-card border border-dashed border-line p-8 text-center text-sm text-ink-faint">Nothing here.</p>
         )}
         {items.map((o) => (
           <OpportunityRow key={o.id} item={o} expanded={openId === o.id} onToggle={() => setOpenId(openId === o.id ? null : o.id)}>
             <div className="mt-4 flex flex-wrap gap-2">
-              {o.status !== 'Reviewing' && o.status !== 'Done' && (
+              {o.status === 'New' && (
                 <Button size="sm" onClick={() => setStatuses((s) => ({ ...s, [o.id]: 'Reviewing' }))}>
                   Start review
                 </Button>
               )}
               {o.status !== 'Done' ? (
                 <Button size="sm" variant="secondary" onClick={() => setStatuses((s) => ({ ...s, [o.id]: 'Done' }))}>
-                  <Check size={14} /> Mark done
+                  <Check size={14} aria-hidden="true" /> Mark done
                 </Button>
               ) : (
                 <Button size="sm" variant="secondary" onClick={() => setStatuses((s) => ({ ...s, [o.id]: 'New' }))}>

@@ -142,7 +142,7 @@ export default function DashboardLayout() {
       )}
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line-soft bg-page/90 px-4 backdrop-blur-md sm:px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line-soft bg-page px-4 sm:px-8">
           <button
             type="button"
             className="grid h-10 w-10 place-items-center rounded-lg text-ink hover:bg-sunken lg:hidden"
@@ -152,10 +152,7 @@ export default function DashboardLayout() {
             <Menu size={20} />
           </button>
           <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
-          <span className="ml-auto inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent-soft px-3 py-1 text-xs font-medium text-accent-strong">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-bright" />
-            Early preview
-          </span>
+          <span className="ml-auto rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted">Early preview</span>
         </header>
 
         <main className="px-4 py-6 sm:px-8 sm:py-8">

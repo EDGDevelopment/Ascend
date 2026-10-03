@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Cpu, Play } from 'lucide-react'
+import { Play } from 'lucide-react'
 import { useDashboardData } from '@/data/useDashboardData'
 import { Button } from '@/components/ui/Button'
 import { Card } from '../components/Card'
@@ -26,7 +26,6 @@ export default function ModelPage() {
   const specs: [string, string][] = [
     ['Architecture', model.architecture],
     ['Patch length', `${model.patchLength} months`],
-    ['Stride', `${model.stride} month`],
     ['Context window', `${model.contextMonths} months`],
     ['Horizon', `${model.horizonDays} days`],
     ['Parameters', model.parameters],
@@ -35,34 +34,26 @@ export default function ModelPage() {
 
   return (
     <div className="mx-auto max-w-[1100px] space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-card border border-line bg-surface p-5 shadow-card sm:p-6">
-        <div className="flex items-start gap-4">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-accent text-white">
-            <Cpu size={24} />
-          </span>
-          <div>
-            <h2 className="text-lg font-semibold tracking-tight">{model.name}</h2>
-            <p className="mt-0.5 text-sm text-ink-muted">{model.version}</p>
-            <span className="mt-2 inline-flex rounded-full bg-warn-soft px-2.5 py-0.5 text-xs font-medium text-warn">
-              {model.status}
-            </span>
-          </div>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-semibold tracking-tight">{model.name}</h2>
+          <p className="text-sm text-ink-muted">{model.version}</p>
         </div>
-        <div className="text-right">
-          <Button onClick={runForecast} disabled={running}>
-            <Play size={15} /> {running ? 'Running...' : 'Run sample forecast'}
-          </Button>
-          <p role="status" className="mt-2 text-xs text-ink-faint">
-            {lastRun ? `Sample output generated at ${lastRun}` : 'The production model is not connected yet.'}
+        <div className="flex items-center gap-4">
+          <p role="status" className="text-xs text-ink-faint">
+            {lastRun ? `Sample run at ${lastRun}` : 'Production model not connected'}
           </p>
+          <Button onClick={runForecast} disabled={running}>
+            <Play size={15} aria-hidden="true" /> {running ? 'Running...' : 'Run sample forecast'}
+          </Button>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card title="Configuration" subtitle="Current prototype settings">
-          <dl className="space-y-3 text-[13.5px]">
+        <Card title="Configuration">
+          <dl className="divide-y divide-line-soft text-[13.5px]">
             {specs.map(([k, v]) => (
-              <div key={k} className="flex justify-between gap-4 border-b border-line-soft pb-3 last:border-0 last:pb-0">
+              <div key={k} className="flex justify-between gap-4 py-2.5 first:pt-0 last:pb-0">
                 <dt className="text-ink-faint">{k}</dt>
                 <dd className="text-right font-medium">{v}</dd>
               </div>
@@ -70,8 +61,8 @@ export default function ModelPage() {
           </dl>
         </Card>
 
-        <Card title="Forecast error by horizon" subtitle="Mean absolute percentage error, lower is better">
-          <div className="h-[230px]" role="img" aria-label="Forecast error rises from 3.1 percent at 30 days to 6.7 percent at 90 days">
+        <Card title="Forecast error" subtitle="Mean absolute percentage error, lower is better">
+          <div className="h-[210px]" role="img" aria-label="Forecast error rises from 3.1 percent at 30 days to 6.7 percent at 90 days">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.accuracy} margin={{ top: 8, right: 4, bottom: 0, left: 0 }}>
                 <CartesianGrid stroke="var(--color-line-soft)" vertical={false} />
@@ -82,7 +73,7 @@ export default function ModelPage() {
                   contentStyle={{ borderRadius: 10, border: '1px solid var(--color-line)', boxShadow: 'var(--shadow-pop)', fontSize: 13 }}
                   formatter={(v) => [`${v}%`, 'Error']}
                 />
-                <Bar dataKey="error" fill="var(--color-accent)" radius={[5, 5, 0, 0]} maxBarSize={56} />
+                <Bar dataKey="error" fill="var(--color-accent)" radius={[4, 4, 0, 0]} maxBarSize={56} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -91,25 +82,23 @@ export default function ModelPage() {
 
       <Card title="Training runs" padded={false}>
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[620px] text-left text-sm">
+          <table className="w-full min-w-[560px] text-left text-sm">
             <caption className="sr-only">Recent model training runs</caption>
             <thead>
-              <tr className="border-y border-line-soft bg-page text-xs uppercase tracking-wide text-ink-faint">
-                <th scope="col" className="px-5 py-3 font-medium">Run</th>
-                <th scope="col" className="px-5 py-3 font-medium">Date</th>
-                <th scope="col" className="px-5 py-3 font-medium">Dataset</th>
-                <th scope="col" className="px-5 py-3 text-right font-medium">MAPE</th>
-                <th scope="col" className="px-5 py-3 font-medium">Notes</th>
+              <tr className="border-y border-line-soft bg-page text-xs text-ink-faint">
+                <th scope="col" className="px-5 py-2.5 font-medium">Run</th>
+                <th scope="col" className="px-5 py-2.5 font-medium">Date</th>
+                <th scope="col" className="px-5 py-2.5 text-right font-medium">MAPE</th>
+                <th scope="col" className="px-5 py-2.5 font-medium">Notes</th>
               </tr>
             </thead>
             <tbody>
               {data.trainingRuns.map((r) => (
                 <tr key={r.id} className="border-b border-line-soft last:border-0">
-                  <th scope="row" className="px-5 py-3.5 font-mono text-[13px] font-medium">{r.id}</th>
-                  <td className="px-5 py-3.5 text-ink-muted">{r.date}</td>
-                  <td className="px-5 py-3.5 text-ink-muted">{r.dataset}</td>
-                  <td className="tabular px-5 py-3.5 text-right font-semibold">{r.mape}%</td>
-                  <td className="px-5 py-3.5 text-ink-muted">{r.note}</td>
+                  <th scope="row" className="px-5 py-3 font-mono text-[13px] font-medium">{r.id}</th>
+                  <td className="px-5 py-3 text-ink-muted">{r.date}</td>
+                  <td className="px-5 py-3 text-right font-semibold">{r.mape}%</td>
+                  <td className="px-5 py-3 text-ink-muted">{r.note}</td>
                 </tr>
               ))}
             </tbody>

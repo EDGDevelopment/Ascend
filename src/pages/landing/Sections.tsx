@@ -121,7 +121,7 @@ const stages = [
 export function RoadmapSection() {
   return (
     <section id="roadmap" className="scroll-mt-16 border-t border-line-soft bg-surface">
-      <div className={`${shell} py-20 sm:py-24`}>
+      <div className={`${shell} pb-14 pt-20 sm:pb-16 sm:pt-24`}>
         <h2 className={`${h2} max-w-2xl`}>Start with one business. Grow into a network.</h2>
         <ol className="mt-12 grid gap-8 md:grid-cols-3">
           {stages.map(([t, d], i) => (
@@ -131,7 +131,7 @@ export function RoadmapSection() {
             </li>
           ))}
         </ol>
-        <p className="mt-10 text-sm text-ink-faint">Privacy first: patterns are learned without businesses exposing financials to each other.</p>
+        <p className="mt-8 text-sm text-ink-faint">Privacy first: patterns are learned without businesses exposing financials to each other.</p>
       </div>
     </section>
   )
@@ -140,8 +140,8 @@ export function RoadmapSection() {
 export function FinalCta() {
   const { user } = useAuth()
   return (
-    <section className="px-5 py-20 sm:px-8 sm:py-24">
-      <div className="mx-auto flex max-w-4xl flex-col items-start justify-between gap-8 rounded-2xl bg-accent px-8 py-12 text-white sm:flex-row sm:items-center sm:px-12">
+    <section className={`${shell} py-12 sm:py-14`}>
+      <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-accent px-8 py-10 text-white sm:flex-row sm:items-center sm:px-12">
         <h2 className="font-display text-3xl leading-[1.1] sm:text-[2.6rem]">Grow with data, not guesswork.</h2>
         <ButtonLink to={user ? '/dashboard' : '/signup'} size="lg" variant="secondary" className="shrink-0 !border-transparent">
           {user ? 'Open dashboard' : 'Get started'} <ArrowRight size={17} />

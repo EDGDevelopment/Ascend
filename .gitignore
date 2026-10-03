@@ -12,3 +12,7 @@ dist-ssr
 *.log
 *.tsbuildinfo
 .claude/
+
+# Local AI tooling
+.agents/
+skills-lock.json

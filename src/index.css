@@ -113,6 +113,13 @@
   letter-spacing: -0.03em;
 }
 
+/* Big headings: medium weight, light tracking. Used by the hero and section headings only. */
+.headline {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
 /* The one authored moment: the landing hero settles into place. */
 @keyframes settle {
   from {

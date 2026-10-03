@@ -53,7 +53,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
   const location = useLocation()
   const from = (location.state as { from?: string } | null)?.from ?? '/dashboard'
 
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(() => (location.state as { email?: string } | null)?.email ?? '')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [businessName, setBusinessName] = useState('')

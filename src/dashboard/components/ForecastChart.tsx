@@ -7,9 +7,11 @@ interface ForecastChartProps {
   height?: number
   /** Multiplies forecast values, used by the scenario slider on the Forecasts page. */
   scenario?: number
+  /** Hides both axes, for compact previews. Tooltips still work. */
+  minimal?: boolean
 }
 
-export function ForecastChart({ points, height = 300, scenario = 1 }: ForecastChartProps) {
+export function ForecastChart({ points, height = 300, scenario = 1, minimal = false }: ForecastChartProps) {
   const adjusted = points.map((p) =>
     p.actual !== null
       ? { ...p, band: null as [number, number] | null }
@@ -27,8 +29,8 @@ export function ForecastChart({ points, height = 300, scenario = 1 }: ForecastCh
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={adjusted} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="var(--color-line-soft)" vertical={false} />
-          <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: 'var(--color-ink-faint)' }} interval={2} />
-          <YAxis tickLine={false} axisLine={false} width={52} tick={{ fontSize: 12, fill: 'var(--color-ink-faint)' }} tickFormatter={formatUsdCompact} domain={['dataMin - 2000', 'dataMax + 2000']} />
+          <XAxis hide={minimal} dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: 'var(--color-ink-faint)' }} interval={2} />
+          <YAxis hide={minimal} tickLine={false} axisLine={false} width={52} tick={{ fontSize: 12, fill: 'var(--color-ink-faint)' }} tickFormatter={formatUsdCompact} domain={['dataMin - 2000', 'dataMax + 2000']} />
           <Tooltip
             cursor={{ stroke: 'var(--color-line)' }}
             contentStyle={{ borderRadius: 10, border: '1px solid var(--color-line)', boxShadow: 'var(--shadow-pop)', fontSize: 13 }}

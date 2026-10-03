@@ -13,7 +13,7 @@ export function AuthShowcase() {
   return (
     <aside aria-hidden="true" className="hidden bg-forest text-white lg:flex lg:items-center lg:justify-center lg:p-12 xl:p-16">
       <div className="w-full max-w-xl">
-        <h2 className="font-display text-4xl leading-[1.05] xl:text-5xl">
+        <h2 className="headline text-3xl leading-[1.1] xl:text-[2.5rem]">
           See what changed.
           <br />
           <span className="text-[#7fd1ad]">Understand why.</span>

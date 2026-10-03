@@ -5,7 +5,7 @@ import { LogoMark } from '@/components/Logo'
 import { ButtonLink } from '@/components/ui/Button'
 
 const shell = 'mx-auto max-w-6xl px-5 sm:px-8'
-const h2 = 'font-display text-3xl leading-[1.1] sm:text-[2.6rem]'
+const h2 = 'headline text-[1.75rem] leading-[1.15] sm:text-[2.25rem]'
 
 const steps = [
   ['Understand', 'What changed, across revenue, costs, payroll and inventory.'],
@@ -142,7 +142,7 @@ export function FinalCta() {
   return (
     <section className={`${shell} py-12 sm:py-14`}>
       <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-accent px-8 py-10 text-white sm:flex-row sm:items-center sm:px-12">
-        <h2 className="font-display text-3xl leading-[1.1] sm:text-[2.6rem]">Grow with data, not guesswork.</h2>
+        <h2 className="headline text-[1.75rem] leading-[1.15] sm:text-[2.25rem]">Grow with data, not guesswork.</h2>
         <ButtonLink to={user ? '/dashboard' : '/signup'} size="lg" variant="secondary" className="shrink-0 !border-transparent">
           {user ? 'Open dashboard' : 'Get started'} <ArrowRight size={17} />
         </ButtonLink>

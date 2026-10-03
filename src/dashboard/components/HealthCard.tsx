@@ -5,7 +5,7 @@ export function HealthCard({ score, change, factors }: { score: number; change: 
   return (
     <Card title="Business health">
       <p className="flex items-baseline gap-2">
-        <span className="tabular text-5xl font-semibold leading-none tracking-tight text-accent">{score}</span>
+        <span className="tabular text-5xl font-semibold leading-none tracking-tight text-accent-ink">{score}</span>
         <span className="text-sm text-ink-faint">/ 100</span>
         <span className="tabular ml-auto text-[13px] font-medium text-up">+{change} this month</span>
       </p>

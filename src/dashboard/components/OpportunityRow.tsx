@@ -23,7 +23,7 @@ export function OpportunityRow({ item, expanded = false, onToggle, compact = fal
             {item.area} · {Math.round(item.confidence * 100)}% confidence
           </p>
         </div>
-        <p className="tabular shrink-0 text-[15px] font-semibold text-accent">{formatUsd(item.monthlyValue)}/mo</p>
+        <p className="tabular shrink-0 text-[15px] font-semibold text-accent-ink">{formatUsd(item.monthlyValue)}/mo</p>
       </div>
     )
   }
@@ -42,7 +42,7 @@ export function OpportunityRow({ item, expanded = false, onToggle, compact = fal
         </div>
         <div className="flex shrink-0 items-start gap-3">
           <div className="text-right">
-            <p className="tabular text-[15px] font-semibold text-accent">{formatUsd(item.monthlyValue)}/mo</p>
+            <p className="tabular text-[15px] font-semibold text-accent-ink">{formatUsd(item.monthlyValue)}/mo</p>
             <p className="tabular mt-0.5 text-xs text-ink-faint">{Math.round(item.confidence * 100)}% confidence</p>
           </div>
           <ChevronDown size={18} aria-hidden="true" className={`mt-0.5 text-ink-faint transition-transform ${expanded ? 'rotate-180' : ''}`} />

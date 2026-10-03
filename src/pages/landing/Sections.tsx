@@ -94,7 +94,7 @@ export function ProductSection() {
         <div className="mt-16 overflow-hidden rounded-xl border border-line bg-surface">
           <div className="grid grid-cols-2 border-b border-line text-sm font-semibold">
             <div className="px-5 py-3 text-ink-faint">Traditional software</div>
-            <div className="bg-accent-soft px-5 py-3 text-accent-strong">Ascend</div>
+            <div className="bg-accent-soft px-5 py-3 text-accent-ink">Ascend</div>
           </div>
           {compare.map(([a, b]) => (
             <div key={a} className="grid grid-cols-2 border-b border-line-soft last:border-b-0">
@@ -102,7 +102,7 @@ export function ProductSection() {
                 <X size={15} aria-hidden="true" className="shrink-0 text-ink-faint" /> {a}
               </div>
               <div className="flex items-center gap-2.5 bg-accent-soft/40 px-5 py-3.5 font-medium">
-                <Check size={15} aria-hidden="true" className="shrink-0 text-accent" /> {b}
+                <Check size={15} aria-hidden="true" className="shrink-0 text-accent-ink" /> {b}
               </div>
             </div>
           ))}

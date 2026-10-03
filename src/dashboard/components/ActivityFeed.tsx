@@ -10,7 +10,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
         const Icon = icons[kind]
         return (
           <li key={id} className="flex gap-3">
-            <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent">
+            <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent-ink">
               <Icon size={15} />
             </span>
             <div className="min-w-0">

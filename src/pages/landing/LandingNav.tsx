@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
 import { Logo } from '@/components/Logo'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { ButtonLink } from '@/components/ui/Button'
 
 const links = [
@@ -34,6 +35,7 @@ export function LandingNav() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           {user ? (
             <ButtonLink to="/dashboard" size="sm">
               Open dashboard
@@ -50,9 +52,11 @@ export function LandingNav() {
           )}
         </div>
 
+        <div className="flex items-center gap-1 md:hidden">
+        <ThemeToggle />
         <button
           type="button"
-          className="grid h-10 w-10 place-items-center rounded-lg text-ink hover:bg-sunken md:hidden"
+          className="grid h-10 w-10 place-items-center rounded-lg text-ink hover:bg-sunken"
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -60,6 +64,7 @@ export function LandingNav() {
         >
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
+        </div>
       </div>
 
       {open && (

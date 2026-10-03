@@ -33,15 +33,15 @@ export function ForecastChart({ points, height = 300, scenario = 1, minimal = fa
           <YAxis hide={minimal} tickLine={false} axisLine={false} width={52} tick={{ fontSize: 12, fill: 'var(--color-ink-faint)' }} tickFormatter={formatUsdCompact} domain={['dataMin - 2000', 'dataMax + 2000']} />
           <Tooltip
             cursor={{ stroke: 'var(--color-line)' }}
-            contentStyle={{ borderRadius: 10, border: '1px solid var(--color-line)', boxShadow: 'var(--shadow-pop)', fontSize: 13 }}
+            contentStyle={{ borderRadius: 10, border: '1px solid var(--color-line)', boxShadow: 'var(--shadow-pop)', background: 'var(--color-surface)', color: 'var(--color-ink)', fontSize: 13 }}
             formatter={(value, name) => {
               if (name === 'band' && Array.isArray(value)) return [`${formatUsd(value[0])} to ${formatUsd(value[1])}`, 'Range']
               return [formatUsd(Number(value)), name === 'actual' ? 'Actual' : 'Forecast']
             }}
           />
-          <Area dataKey="band" stroke="none" fill="var(--color-accent-bright)" fillOpacity={0.16} connectNulls isAnimationActive={false} />
-          <Line dataKey="actual" stroke="var(--color-accent)" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} connectNulls={false} isAnimationActive={false} />
-          <Line dataKey="forecast" stroke="var(--color-accent-bright)" strokeWidth={2.5} strokeDasharray="6 5" dot={false} activeDot={{ r: 4 }} connectNulls={false} isAnimationActive={false} />
+          <Area dataKey="band" stroke="none" fill="var(--color-series-2)" fillOpacity={0.16} connectNulls isAnimationActive={false} />
+          <Line dataKey="actual" stroke="var(--color-series)" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} connectNulls={false} isAnimationActive={false} />
+          <Line dataKey="forecast" stroke="var(--color-series-2)" strokeWidth={2.5} strokeDasharray="6 5" dot={false} activeDot={{ r: 4 }} connectNulls={false} isAnimationActive={false} />
           {firstForecast && <ReferenceLine x={firstForecast} stroke="var(--color-ink-faint)" strokeDasharray="3 4" />}
         </ComposedChart>
       </ResponsiveContainer>

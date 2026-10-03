@@ -29,7 +29,7 @@ export default function ForecastsPage() {
         <Card title="Scenario" subtitle="Adjust expected demand">
           <label htmlFor="scenario" className="flex items-baseline justify-between text-[13px] text-ink-muted">
             Demand change
-            <span className="tabular text-xl font-semibold text-accent">{shift === 0 ? 'Baseline' : formatPercent(shift, 0)}</span>
+            <span className="tabular text-xl font-semibold text-accent-ink">{shift === 0 ? 'Baseline' : formatPercent(shift, 0)}</span>
           </label>
           <input
             id="scenario"

@@ -34,7 +34,7 @@ export default function OpportunitiesPage() {
               aria-selected={filter === f}
               onClick={() => setFilter(f)}
               className={`rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-                filter === f ? 'bg-surface text-ink' : 'text-ink-muted hover:text-ink'
+                filter === f ? 'bg-raised text-ink' : 'text-ink-muted hover:text-ink'
               }`}
             >
               {f}
@@ -42,7 +42,7 @@ export default function OpportunitiesPage() {
           ))}
         </div>
         <p className="text-sm text-ink-muted">
-          <span className="tabular text-lg font-semibold text-accent">{formatUsd(total)}</span> open per month
+          <span className="tabular text-lg font-semibold text-accent-ink">{formatUsd(total)}</span> open per month
         </p>
       </div>
 

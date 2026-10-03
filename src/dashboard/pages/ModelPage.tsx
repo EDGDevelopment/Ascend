@@ -70,10 +70,10 @@ export default function ModelPage() {
                 <YAxis tickLine={false} axisLine={false} width={36} tick={{ fontSize: 12, fill: 'var(--color-ink-faint)' }} tickFormatter={(v) => `${v}%`} />
                 <Tooltip
                   cursor={{ fill: 'var(--color-sunken)' }}
-                  contentStyle={{ borderRadius: 10, border: '1px solid var(--color-line)', boxShadow: 'var(--shadow-pop)', fontSize: 13 }}
+                  contentStyle={{ borderRadius: 10, border: '1px solid var(--color-line)', boxShadow: 'var(--shadow-pop)', background: 'var(--color-surface)', color: 'var(--color-ink)', fontSize: 13 }}
                   formatter={(v) => [`${v}%`, 'Error']}
                 />
-                <Bar dataKey="error" fill="var(--color-accent)" radius={[4, 4, 0, 0]} maxBarSize={56} />
+                <Bar dataKey="error" fill="var(--color-series)" radius={[4, 4, 0, 0]} maxBarSize={56} />
               </BarChart>
             </ResponsiveContainer>
           </div>

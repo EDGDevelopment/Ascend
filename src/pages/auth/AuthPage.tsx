@@ -4,6 +4,7 @@ import { ArrowLeft, Eye, EyeOff, MailCheck } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
 import { DEMO_ACCOUNT } from '@/auth/demoAuth'
 import { Logo } from '@/components/Logo'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
 import { AuthShowcase } from './AuthShowcase'
@@ -141,19 +142,22 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
   return (
     <div className="grid min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
       <main className="flex flex-col px-6 py-8 sm:px-10">
-        <Logo />
+        <div className="flex items-center justify-between">
+          <Logo />
+          <ThemeToggle />
+        </div>
 
         <div className="mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-center py-10">
           {notice ? (
             <div role="status" className="text-center">
-              <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-accent-soft text-accent">
+              <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-accent-soft text-accent-ink">
                 <MailCheck size={22} />
               </div>
               <h1 className="mt-5 font-display text-3xl leading-tight">{notice.title}</h1>
               <p className="mt-2 text-sm text-ink-muted">{notice.body}</p>
               <Link
                 to="/login"
-                className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+                className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent-ink hover:underline"
               >
                 <ArrowLeft size={15} /> Back to sign in
               </Link>
@@ -166,7 +170,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
               {auth.mode === 'demo' && mode === 'login' && (
                 <div className="mt-6 rounded-lg bg-accent-soft p-4">
                   <p className="text-[13px] text-ink-muted">
-                    <span className="font-semibold text-accent-strong">Demo mode.</span> Any email and a 6+ character password will sign in.
+                    <span className="font-semibold text-accent-ink">Demo mode.</span> Any email and a 6+ character password will sign in.
                   </p>
                   <Button
                     variant="secondary"
@@ -216,7 +220,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
 
                 {mode === 'login' && (
                   <div className="text-right">
-                    <Link to="/forgot-password" className="text-[13px] font-medium text-accent hover:underline">
+                    <Link to="/forgot-password" className="text-[13px] font-medium text-accent-ink hover:underline">
                       Forgot password?
                     </Link>
                   </div>
@@ -240,7 +244,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
                 {mode === 'login' && (
                   <>
                     New to Ascend?{' '}
-                    <Link to="/signup" className="font-medium text-accent hover:underline">
+                    <Link to="/signup" className="font-medium text-accent-ink hover:underline">
                       Create an account
                     </Link>
                   </>
@@ -248,7 +252,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
                 {mode === 'signup' && (
                   <>
                     Already have an account?{' '}
-                    <Link to="/login" className="font-medium text-accent hover:underline">
+                    <Link to="/login" className="font-medium text-accent-ink hover:underline">
                       Sign in
                     </Link>
                   </>
@@ -256,7 +260,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
                 {(mode === 'forgot' || mode === 'reset') && (
                   <Link
                     to="/login"
-                    className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
+                    className="inline-flex items-center gap-1.5 font-medium text-accent-ink hover:underline"
                   >
                     <ArrowLeft size={15} /> Back to sign in
                   </Link>

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from '@/auth/AuthProvider'
+import { ThemeProvider } from '@/theme/ThemeProvider'
 import { FullPageLoader, ProtectedRoute } from '@/auth/ProtectedRoute'
 import AuthPage from '@/pages/auth/AuthPage'
 import LandingPage from '@/pages/landing/LandingPage'
@@ -13,6 +14,7 @@ const ModelPage = lazy(() => import('@/dashboard/pages/ModelPage'))
 
 export default function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <BrowserRouter>
         <Suspense fallback={<FullPageLoader />}>
@@ -38,5 +40,6 @@ export default function App() {
         </Suspense>
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   )
 }

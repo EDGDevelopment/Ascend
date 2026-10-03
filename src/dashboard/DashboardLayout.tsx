@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
 import { Logo } from '@/components/Logo'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 const nav = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
@@ -65,7 +66,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                isActive ? 'bg-accent-soft text-accent-strong' : 'text-ink-muted hover:bg-sunken hover:text-ink'
+                isActive ? 'bg-accent-soft text-accent-ink' : 'text-ink-muted hover:bg-sunken hover:text-ink'
               }`
             }
           >
@@ -124,7 +125,7 @@ export default function DashboardLayout() {
           <button
             type="button"
             aria-label="Close navigation"
-            className="absolute inset-0 bg-ink/40"
+            className="absolute inset-0 bg-black/50"
             onClick={() => setDrawer(false)}
           />
           <div className="absolute inset-y-0 left-0 w-[280px] bg-surface shadow-pop">
@@ -153,6 +154,7 @@ export default function DashboardLayout() {
           </button>
           <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
           <span className="ml-auto rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted">Early preview</span>
+          <ThemeToggle />
         </header>
 
         <main className="px-4 py-6 sm:px-8 sm:py-8">

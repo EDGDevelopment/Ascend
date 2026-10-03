@@ -1,7 +1,7 @@
 import type { Impact, OpportunityStatus, SourceStatus } from '@/data/types'
 
 const tone = {
-  good: 'bg-accent-soft text-accent-strong',
+  good: 'bg-accent-soft text-accent-ink',
   warn: 'bg-warn-soft text-warn',
   bad: 'bg-down-soft text-down',
   neutral: 'bg-sunken text-ink-muted',

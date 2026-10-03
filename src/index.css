@@ -13,6 +13,7 @@
 
   --color-page: #f6f8f6;
   --color-surface: #ffffff;
+  --color-raised: #ffffff; /* selected tab or segment on a sunken track */
   --color-sunken: #ecf2ee;
   --color-line: #d6dcd7;
   --color-line-soft: #e6ebe7;
@@ -26,6 +27,9 @@
   --color-accent-strong: #185640;
   --color-accent-bright: #2e8a67;
   --color-accent-soft: #e1eee7;
+  --color-accent-ink: #1f6b4f; /* accent used as text, lightened in dark mode */
+  --color-series: #1f6b4f; /* chart primary series */
+  --color-series-2: #2e8a67; /* chart forecast and range */
   --color-forest: #10261d;
 
   --color-up: #1f7a4d;
@@ -38,7 +42,82 @@
   --shadow-pop: 0 8px 28px rgba(22, 28, 25, 0.12);
 }
 
+/*
+ * Dark theme. Composed rather than inverted: elevation reads as lighter
+ * surfaces (page < surface < raised), text is a tinted off-white, the accent
+ * is split so button fills stay deep while accent text and chart lines
+ * lighten, and status colors are re-tuned for dark backgrounds.
+ * Follows the OS by default; the toggle sets data-theme to light or dark.
+ * The two blocks are identical on purpose (plain CSS cannot share them).
+ */
+:root[data-theme='dark'] {
+  --color-page: #0c1411;
+  --color-surface: #121c18;
+  --color-raised: #25342e;
+  --color-sunken: #1a2722;
+  --color-line: #2a3a34;
+  --color-line-soft: #202e29;
+
+  --color-ink: #e9f0ec;
+  --color-ink-soft: #d0dbd5;
+  --color-ink-muted: #a3b4ac;
+  --color-ink-faint: #8b9d95;
+
+  --color-accent: #2a8061;
+  --color-accent-strong: #339473;
+  --color-accent-bright: #3fa27e;
+  --color-accent-soft: #163328;
+  --color-accent-ink: #6fd0a8;
+  --color-series: #52bb93;
+  --color-series-2: #86d6b6;
+
+  --color-up: #4cc38a;
+  --color-down: #f19488;
+  --color-warn: #e3b45c;
+  --color-warn-soft: #2d2411;
+  --color-down-soft: #371a19;
+
+  --shadow-pop: 0 8px 28px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-page: #0c1411;
+    --color-surface: #121c18;
+    --color-raised: #25342e;
+    --color-sunken: #1a2722;
+    --color-line: #2a3a34;
+    --color-line-soft: #202e29;
+
+    --color-ink: #e9f0ec;
+    --color-ink-soft: #d0dbd5;
+    --color-ink-muted: #a3b4ac;
+    --color-ink-faint: #8b9d95;
+
+    --color-accent: #2a8061;
+    --color-accent-strong: #339473;
+    --color-accent-bright: #3fa27e;
+    --color-accent-soft: #163328;
+    --color-accent-ink: #6fd0a8;
+    --color-series: #52bb93;
+    --color-series-2: #86d6b6;
+
+    --color-up: #4cc38a;
+    --color-down: #f19488;
+    --color-warn: #e3b45c;
+    --color-warn-soft: #2d2411;
+    --color-down-soft: #371a19;
+
+    --shadow-pop: 0 8px 28px rgba(0, 0, 0, 0.55);
+    color-scheme: dark;
+  }
+}
+
 @layer base {
+  :root {
+    color-scheme: light;
+  }
   html {
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
@@ -60,6 +139,12 @@
   }
   p {
     text-wrap: pretty;
+  }
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-surface) inset;
+    -webkit-text-fill-color: var(--color-ink);
+    caret-color: var(--color-ink);
   }
   ::selection {
     background: var(--color-accent);

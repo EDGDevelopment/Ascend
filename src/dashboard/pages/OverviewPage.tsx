@@ -16,7 +16,7 @@ import { OpportunityRow } from '../components/OpportunityRow'
 
 function ViewAll({ to }: { to: string }) {
   return (
-    <Link to={to} className="inline-flex items-center gap-1 text-[13px] font-medium text-accent hover:underline">
+    <Link to={to} className="inline-flex items-center gap-1 text-[13px] font-medium text-accent-ink hover:underline">
       View all <ArrowRight size={14} aria-hidden="true" />
     </Link>
   )

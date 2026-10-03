@@ -12,7 +12,7 @@ export function MetricTabs({ value, onChange }: { value: MetricKey; onChange: (m
           aria-selected={value === m}
           onClick={() => onChange(m)}
           className={`rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-            value === m ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
+            value === m ? 'bg-raised text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
           }`}
         >
           {metricLabels[m]}

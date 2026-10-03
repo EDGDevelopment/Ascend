@@ -3,7 +3,8 @@ import { AuthProvider } from '@/auth/AuthProvider'
 import { ProtectedRoute } from '@/auth/ProtectedRoute'
 import AuthPage from '@/pages/auth/AuthPage'
 import LandingPage from '@/pages/landing/LandingPage'
-import AppPlaceholder from '@/pages/AppPlaceholder'
+import DashboardLayout from '@/dashboard/DashboardLayout'
+import OverviewPage from '@/dashboard/pages/OverviewPage'
 
 export default function App() {
   return (
@@ -17,7 +18,9 @@ export default function App() {
           <Route path="/reset-password" element={<AuthPage mode="reset" />} />
 
           <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<AppPlaceholder />} />
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<OverviewPage />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

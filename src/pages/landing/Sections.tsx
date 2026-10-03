@@ -33,30 +33,30 @@ export function HowItWorks() {
 
 function Stage({ title, items, strong = false }: { title: string; items: string[]; strong?: boolean }) {
   return (
-    <div className={`rounded-xl border p-5 ${strong ? 'border-[#7fd1ad]/50 bg-white/[0.07]' : 'border-white/15'}`}>
-      <h3 className="text-sm font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-white/70">{items.join('  ·  ')}</p>
+    <div className={`rounded-xl border bg-surface p-5 ${strong ? 'border-accent-bright' : 'border-line'}`}>
+      <h3 className="text-sm font-semibold">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-ink-muted">{items.join('  ·  ')}</p>
     </div>
   )
 }
 
 export function ModelSection() {
   return (
-    <section id="model" className="scroll-mt-16 bg-forest text-white">
+    <section id="model" className="scroll-mt-16 bg-accent-soft">
       <div className={`${shell} py-20 sm:py-24`}>
         <h2 className={`${h2} max-w-2xl`}>A neural network that learns one business at a time.</h2>
-        <p className="mt-5 max-w-xl text-lg text-white/70">
+        <p className="mt-5 max-w-xl text-lg text-ink-muted">
           Your history goes in. Forecasts, change signals and growth signals come out.
         </p>
 
         <div className="mt-12 grid items-center gap-3 lg:grid-cols-[1fr_auto_1.2fr_auto_1fr]">
           <Stage title="Your history" items={['Revenue', 'Expenses', 'Cash flow', 'Payroll', 'Inventory']} />
-          <ArrowRight aria-hidden="true" size={20} className="mx-auto rotate-90 text-[#7fd1ad] lg:rotate-0" />
+          <ArrowRight aria-hidden="true" size={20} className="mx-auto rotate-90 text-accent-ink lg:rotate-0" />
           <Stage strong title="Ascend time-series model" items={['Patches', 'Transformer', 'Per-business tuning']} />
-          <ArrowRight aria-hidden="true" size={20} className="mx-auto rotate-90 text-[#7fd1ad] lg:rotate-0" />
+          <ArrowRight aria-hidden="true" size={20} className="mx-auto rotate-90 text-accent-ink lg:rotate-0" />
           <Stage title="Signals" items={['Forecast', 'Change', 'Growth']} />
         </div>
-        <p className="mt-6 text-sm text-white/55">Needs 12 to 24 months of history. Production model in development.</p>
+        <p className="mt-6 text-sm text-ink-muted">Needs 12 to 24 months of history. Production model in development.</p>
       </div>
     </section>
   )

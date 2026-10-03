@@ -16,12 +16,15 @@ function seeded(seed: number) {
   }
 }
 
-function build(base: number, trend: number, season: number, noise: number, seed: number, forecastLift: number): SeriesPoint[] {
+function build(base: number, trend: number, season: number, noise: number, seed: number, forecastLift: number, lastGrowth: number): SeriesPoint[] {
   const rand = seeded(seed)
   const actuals = MONTHS.map((_, i) => {
     const seasonal = Math.sin(((i + 2) / 12) * Math.PI * 2) * season
     return Math.round(base + trend * i + seasonal + rand() * noise)
   })
+
+  // Pin the latest month-over-month change so the sample story stays consistent.
+  actuals[actuals.length - 1] = Math.round(actuals[actuals.length - 2] * (1 + lastGrowth))
 
   const points: SeriesPoint[] = MONTHS.map((month, i) => ({
     month,
@@ -38,7 +41,8 @@ function build(base: number, trend: number, season: number, noise: number, seed:
   FORECAST_MONTHS.forEach((month, j) => {
     const i = MONTHS.length + j
     const seasonal = Math.sin(((i + 2) / 12) * Math.PI * 2) * season
-    const value = Math.round(base + trend * i + seasonal + forecastLift * (j + 1))
+    const lastSeasonal = Math.sin(((MONTHS.length - 1 + 2) / 12) * Math.PI * 2) * season
+    const value = Math.round(last + (trend + forecastLift) * (j + 1) + (seasonal - lastSeasonal) * 0.5)
     const spread = Math.round(Math.abs(base) * 0.03 * (j + 1.2))
     points.push({ month, actual: null, forecast: value, low: value - spread, high: value + spread })
   })
@@ -47,9 +51,9 @@ function build(base: number, trend: number, season: number, noise: number, seed:
 }
 
 export const mockSeries: MetricSeries = {
-  revenue: build(38000, 560, 3400, 2200, 11, 700),
-  expenses: build(28500, 190, 1200, 1100, 29, 250),
-  cashFlow: build(7600, 310, 1700, 1400, 47, 520),
+  revenue: build(38000, 560, 3400, 2200, 11, 700, 0.084),
+  expenses: build(28500, 190, 1200, 1100, 29, 250, 0.031),
+  cashFlow: build(7600, 310, 1700, 1400, 47, 520, 0.112),
 }
 
 export function lastActual(metric: MetricKey): number {

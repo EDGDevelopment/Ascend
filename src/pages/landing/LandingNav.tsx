@@ -16,9 +16,14 @@ export function LandingNav() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line-soft bg-page/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-line-soft bg-page">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <Logo />
+        <div className="flex items-center gap-3">
+          <Logo />
+          <span className="hidden rounded-full border border-line px-2 py-0.5 text-[11px] font-medium text-ink-muted sm:inline">
+            Early preview
+          </span>
+        </div>
 
         <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
@@ -61,12 +66,7 @@ export function LandingNav() {
         <div id="mobile-menu" className="border-t border-line-soft bg-page px-5 pb-5 md:hidden">
           <nav aria-label="Mobile" className="flex flex-col py-2">
             {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="py-3 text-[15px] text-ink-soft"
-              >
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="py-3 text-[15px] text-ink-soft">
                 {l.label}
               </a>
             ))}

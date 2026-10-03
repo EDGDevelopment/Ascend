@@ -13,22 +13,22 @@ export type AuthMode = 'login' | 'signup' | 'forgot' | 'reset'
 const copy: Record<AuthMode, { title: string; subtitle: string; cta: string }> = {
   login: {
     title: 'Welcome back',
-    subtitle: 'Sign in to see how your business is moving.',
+    subtitle: '',
     cta: 'Sign in',
   },
   signup: {
-    title: 'Create your Ascend account',
-    subtitle: 'Connect your data and get your first forecast.',
+    title: 'Create your account',
+    subtitle: '',
     cta: 'Create account',
   },
   forgot: {
     title: 'Reset your password',
-    subtitle: 'Enter your email and we will send you a reset link.',
+    subtitle: 'We will email you a reset link.',
     cta: 'Send reset link',
   },
   reset: {
     title: 'Choose a new password',
-    subtitle: 'Use at least 8 characters.',
+    subtitle: '',
     cta: 'Update password',
   },
 }
@@ -98,7 +98,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
         if (result.needsEmailConfirmation) {
           setNotice({
             title: 'Check your inbox',
-            body: `We sent a confirmation link to ${email.trim()}. Open it to finish creating your account.`,
+            body: `Confirm your email at ${email.trim()} to finish signing up.`,
           })
         } else {
           navigate('/dashboard', { replace: true })
@@ -107,7 +107,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
         await auth.requestPasswordReset(email.trim())
         setNotice({
           title: 'Reset link sent',
-          body: 'If an account exists for that email, a reset link is on its way.',
+          body: 'If that email has an account, a reset link is on its way.',
         })
       } else {
         if (password.length < 8) throw new Error('Password must be at least 8 characters.')
@@ -133,7 +133,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
       onChange={(e) => setPassword(e.target.value)}
       minLength={mode === 'login' ? undefined : 8}
       required
-      hint={mode === 'signup' ? 'At least 8 characters.' : undefined}
+      hint={mode === 'signup' ? '8 characters or more' : undefined}
       trailing={<PasswordToggle shown={showPassword} onToggle={() => setShowPassword((s) => !s)} />}
     />
   )
@@ -143,13 +143,13 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
       <main className="flex flex-col px-6 py-8 sm:px-10">
         <Logo />
 
-        <div className="rise mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-center py-10">
+        <div className="mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-center py-10">
           {notice ? (
             <div role="status" className="text-center">
               <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-accent-soft text-accent">
                 <MailCheck size={22} />
               </div>
-              <h1 className="mt-5 text-2xl font-semibold tracking-tight">{notice.title}</h1>
+              <h1 className="mt-5 font-display text-3xl leading-tight">{notice.title}</h1>
               <p className="mt-2 text-sm text-ink-muted">{notice.body}</p>
               <Link
                 to="/login"
@@ -160,15 +160,13 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
             </div>
           ) : (
             <>
-              <h1 className="text-[1.75rem] font-semibold tracking-tight">{title}</h1>
-              <p className="mt-2 text-sm text-ink-muted">{subtitle}</p>
+              <h1 className="font-display text-3xl leading-tight">{title}</h1>
+              {subtitle && <p className="mt-3 text-sm text-ink-muted">{subtitle}</p>}
 
               {auth.mode === 'demo' && mode === 'login' && (
-                <div className="mt-6 rounded-xl border border-accent/20 bg-accent-soft/70 p-4">
-                  <p className="text-[13px] font-semibold text-accent-strong">Demo mode</p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-ink-muted">
-                    Supabase is not connected, so any email with a password of 6 or more characters
-                    will sign in.
+                <div className="mt-6 rounded-lg bg-accent-soft p-4">
+                  <p className="text-[13px] text-ink-muted">
+                    <span className="font-semibold text-accent-strong">Demo mode.</span> Any email and a 6+ character password will sign in.
                   </p>
                   <Button
                     variant="secondary"

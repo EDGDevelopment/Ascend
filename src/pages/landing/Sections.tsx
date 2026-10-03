@@ -112,7 +112,7 @@ export function ModelSection() {
             </div>
           ))}
         </div>
-        <p className="mt-6 text-xs text-white/40">The production model is in development. The dashboard in this preview runs on sample data.</p>
+        <p className="mt-6 text-xs text-white/40">The production model is in development.</p>
       </div>
     </section>
   )
@@ -206,7 +206,7 @@ export function FinalCta() {
       <div className="mx-auto max-w-4xl rounded-3xl bg-accent px-6 py-14 text-center text-white sm:px-12">
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Grow with data, not guesswork.</h2>
         <p className="mx-auto mt-4 max-w-xl text-[17px] text-white/75">
-          Explore the Ascend preview with sample data for a cafe, from forecasts to ranked opportunities.
+          Explore the Ascend preview, from forecasts to ranked opportunities.
         </p>
         <div className="mt-8 flex justify-center">
           <ButtonLink to={user ? '/dashboard' : '/signup'} size="lg" variant="secondary" className="!border-transparent">
@@ -231,7 +231,7 @@ export function Footer() {
           <Link to="/signup" className="hover:text-ink">Get started</Link>
           <a href="#how" className="hover:text-ink">How it works</a>
         </nav>
-        <p className="text-xs text-ink-faint">&copy; 2026 Ascend. Early preview, sample data only.</p>
+        <p className="text-xs text-ink-faint">&copy; 2026 Ascend. Early preview.</p>
       </div>
     </footer>
   )

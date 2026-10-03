@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   Database,
-  FlaskConical,
   LayoutDashboard,
   LineChart,
   LogOut,
@@ -76,14 +75,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="m-3 rounded-xl border border-line-soft bg-page p-3.5">
-        <div className="flex items-center gap-2 text-[13px] font-semibold text-ink-soft">
-          <FlaskConical size={15} className="text-accent" /> Demo workspace
-        </div>
-        <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">
-          Sample data for a cafe. The model and backend are not connected yet.
-        </p>
-      </div>
 
       <div className="border-t border-line-soft p-3">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
@@ -161,9 +152,9 @@ export default function DashboardLayout() {
             <Menu size={20} />
           </button>
           <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
-          <span className="ml-auto inline-flex items-center gap-2 rounded-full border border-warn/25 bg-warn-soft px-3 py-1 text-xs font-medium text-warn">
-            <span className="h-1.5 w-1.5 rounded-full bg-warn" />
-            Demo data
+          <span className="ml-auto inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent-soft px-3 py-1 text-xs font-medium text-accent-strong">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent-bright" />
+            Early preview
           </span>
         </header>
 

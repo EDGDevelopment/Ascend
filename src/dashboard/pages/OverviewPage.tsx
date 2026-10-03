@@ -34,7 +34,7 @@ export default function OverviewPage() {
           {firstName ? `Good to see you, ${firstName}.` : 'Welcome back.'} Here is what changed.
         </h2>
         <p className="mt-1.5 text-sm text-ink-muted">
-          Sample view of September 2026 for a {data.business.industry.toLowerCase()} business in {data.business.location}.
+          September 2026 overview for a {data.business.industry.toLowerCase()} business in {data.business.location}.
         </p>
       </div>
 

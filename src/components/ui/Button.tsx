@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react'
 import { Link, type LinkProps } from 'react-router-dom'
 
 type Variant = 'primary' | 'secondary' | 'ghost'
@@ -39,4 +39,14 @@ interface ButtonLinkProps extends LinkProps {
 
 export function ButtonLink({ variant, size, className = '', ...rest }: ButtonLinkProps) {
   return <Link className={buttonClasses(variant, size, className)} {...rest} />
+}
+
+interface ButtonAnchorProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  variant?: Variant
+  size?: Size
+}
+
+/** Plain anchor styled as a button, for in-page links like #how. */
+export function ButtonAnchor({ variant, size, className = '', ...rest }: ButtonAnchorProps) {
+  return <a className={buttonClasses(variant, size, className)} {...rest} />
 }

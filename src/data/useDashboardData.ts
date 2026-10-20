@@ -65,9 +65,10 @@ function withModel(base: DashboardData, o: ModelOutput): DashboardData {
 }
 
 /**
- * Single seam for dashboard data. Today it returns bundled sample data, with the charts replaced by the
- * client's own monthly figures and forecast once they have run the model. Later this is where Supabase
- * queries or the model API will be called.
+ * Single seam for dashboard data. Returns bundled sample data until the client runs the financial model; after
+ * that, revenue (and expenses and cash flow, if they gave monthly expenses) come from their own figures and
+ * forecast, and everything else is still sample data. Later this is where Supabase queries or the model API
+ * will be called.
  */
 export function useDashboardData(): DashboardData {
   const { user } = useAuth()

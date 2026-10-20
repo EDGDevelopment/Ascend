@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from '@/auth/AuthProvider'
 import { ThemeProvider } from '@/theme/ThemeProvider'
+import { ValuationProvider } from '@/valuation/ValuationProvider'
 import { FullPageLoader, ProtectedRoute } from '@/auth/ProtectedRoute'
 import AuthPage from '@/pages/auth/AuthPage'
 import LandingPage from '@/pages/landing/LandingPage'
@@ -11,11 +12,13 @@ const ForecastsPage = lazy(() => import('@/dashboard/pages/ForecastsPage'))
 const OpportunitiesPage = lazy(() => import('@/dashboard/pages/OpportunitiesPage'))
 const DataSourcesPage = lazy(() => import('@/dashboard/pages/DataSourcesPage'))
 const ModelPage = lazy(() => import('@/dashboard/pages/ModelPage'))
+const ValuationPage = lazy(() => import('@/dashboard/pages/ValuationPage'))
 
 export default function App() {
   return (
     <ThemeProvider>
     <AuthProvider>
+      <ValuationProvider>
       <BrowserRouter>
         <Suspense fallback={<FullPageLoader />}>
         <Routes>
@@ -29,6 +32,7 @@ export default function App() {
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<OverviewPage />} />
               <Route path="forecasts" element={<ForecastsPage />} />
+              <Route path="valuation" element={<ValuationPage />} />
               <Route path="opportunities" element={<OpportunitiesPage />} />
               <Route path="data" element={<DataSourcesPage />} />
               <Route path="model" element={<ModelPage />} />
@@ -39,6 +43,7 @@ export default function App() {
         </Routes>
         </Suspense>
       </BrowserRouter>
+      </ValuationProvider>
     </AuthProvider>
     </ThemeProvider>
   )

@@ -32,6 +32,12 @@
   --color-series-2: #2e8a67; /* chart forecast and range */
   --color-forest: #10261d;
 
+  /* Outcome ramp for simulations: best to worst. Cool teal and brand green for upside, amber and coral for downside. */
+  --color-out-1: #1a8fa3;
+  --color-out-2: #2e8a67;
+  --color-out-3: #c98a1c;
+  --color-out-4: #d4503f;
+
   --color-up: #1f7a4d;
   --color-down: #b83325;
   --color-warn: #8f5d0a;
@@ -77,6 +83,11 @@
   --color-warn-soft: #2d2411;
   --color-down-soft: #371a19;
 
+  --color-out-1: #62d3e4;
+  --color-out-2: #52bb93;
+  --color-out-3: #e3b45c;
+  --color-out-4: #f19488;
+
   --shadow-pop: 0 8px 28px rgba(0, 0, 0, 0.55);
   color-scheme: dark;
 }
@@ -108,6 +119,11 @@
     --color-warn: #e3b45c;
     --color-warn-soft: #2d2411;
     --color-down-soft: #371a19;
+
+    --color-out-1: #62d3e4;
+    --color-out-2: #52bb93;
+    --color-out-3: #e3b45c;
+    --color-out-4: #f19488;
 
     --shadow-pop: 0 8px 28px rgba(0, 0, 0, 0.55);
     color-scheme: dark;
@@ -218,4 +234,45 @@
 }
 .settle {
   animation: settle 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/*
+ * Stage: a dark canvas for simulation charts, used in both themes so the colors glow the same way.
+ * It redefines the tokens the charts read, so anything inside it renders as in dark mode.
+ */
+.stage-dark {
+  --color-surface: #0d1612;
+  --color-sunken: #15211c;
+  --color-raised: #25342e;
+  --color-line: #2a3a34;
+  --color-line-soft: #1d2b25;
+  --color-ink: #eef5f1;
+  --color-ink-soft: #d6e1db;
+  --color-ink-muted: #a9bab2;
+  --color-ink-faint: #93a69d;
+  --color-accent-ink: #6fd0a8;
+  --color-down: #f19488;
+  --color-warn: #e3b45c;
+  --color-up: #4cc38a;
+  --color-out-1: #62d3e4;
+  --color-out-2: #52bb93;
+  --color-out-3: #e3b45c;
+  --color-out-4: #f19488;
+  color: var(--color-ink);
+  background:
+    radial-gradient(900px 380px at 12% -10%, rgba(98, 211, 228, 0.16), transparent 60%),
+    radial-gradient(700px 360px at 95% 110%, rgba(241, 148, 136, 0.13), transparent 60%),
+    radial-gradient(800px 400px at 55% 40%, rgba(82, 187, 147, 0.10), transparent 70%),
+    #0b1310;
+  border: 1px solid #22332c;
+  color-scheme: dark;
+}
+
+/* The ramp as a bar or a text fill. Worst on the left, best on the right. */
+.ramp-bg { background: linear-gradient(90deg, var(--color-out-4), var(--color-out-3), var(--color-out-2), var(--color-out-1)); }
+.ramp-text { background: linear-gradient(90deg, var(--color-out-2), var(--color-out-1)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+@keyframes fan-in { from { opacity: 0; } to { opacity: 0.55; } }
+@media (prefers-reduced-motion: no-preference) {
+  .fan-line { animation: fan-in 450ms ease-out both; animation-delay: calc(var(--i, 0) * 3ms); }
 }

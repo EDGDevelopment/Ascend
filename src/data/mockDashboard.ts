@@ -135,4 +135,5 @@ export const mockDashboard: DashboardData = {
     { id: 'run-0411', date: 'Sep 14, 2026', dataset: 'Bella\'s Cafe, 17 months', mape: 4.9, note: 'Tuned patch length from 2 to 3' },
     { id: 'run-0403', date: 'Aug 30, 2026', dataset: 'Bella\'s Cafe, 16 months', mape: 5.8, note: 'Baseline with revenue only' },
   ],
+  modelDriver: null,
 }

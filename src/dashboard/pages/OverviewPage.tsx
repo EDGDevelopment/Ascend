@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import { useDashboardData } from '@/data/useDashboardData'
 import { metricLabels } from '@/data/metrics'
 import type { MetricKey } from '@/data/types'
-import { formatUsd } from '@/lib/format'
+import { formatPercent, formatUsd } from '@/lib/format'
 import { ActivityFeed } from '../components/ActivityFeed'
 import { Card } from '../components/Card'
 import { DemandChart } from '../components/DemandChart'
@@ -43,7 +43,7 @@ export default function OverviewPage() {
         <Card
           className="xl:col-span-2"
           title={`${metricLabels[metric]} forecast`}
-          subtitle={`${formatUsd(end.forecast ?? 0)} projected by ${end.month} (${formatUsd(end.low ?? 0)} to ${formatUsd(end.high ?? 0)})`}
+          subtitle={`${formatUsd(end.forecast ?? 0)} projected by ${end.month} (${formatUsd(end.low ?? 0)} to ${formatUsd(end.high ?? 0)})${data.modelDriver && (metric === 'revenue' || data.modelDriver.coversExpenses) ? `. From your own figures (${formatPercent(data.modelDriver.growth * 100)} expected over 12 months)` : ''}`}
           action={<MetricTabs value={metric} onChange={setMetric} />}
         >
           <ForecastChart points={points} />

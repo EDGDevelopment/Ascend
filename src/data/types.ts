@@ -96,6 +96,21 @@ export interface TrainingRun {
   note: string
 }
 
+/** Set when the charts come from the client's own monthly figures instead of the sample data. */
+export interface ModelDriver {
+  companyName: string
+  orgType: 'local' | 'nonprofit'
+  computedAt: string
+  /** Plain-English name of the forecasting method. */
+  method: string
+  /** Typical monthly miss when the method is tested on the client's most recent months, as a decimal. */
+  backtestError: number | null
+  /** True when the expenses and cash flow charts come from the client's figures too, not just revenue. */
+  coversExpenses: boolean
+  /** Expected revenue growth over the next 12 months versus the last 12, as a decimal. */
+  growth: number
+}
+
 export interface DashboardData {
   business: { name: string; industry: string; location: string }
   healthScore: number
@@ -110,4 +125,5 @@ export interface DashboardData {
   model: ModelInfo
   accuracy: ModelAccuracyPoint[]
   trainingRuns: TrainingRun[]
+  modelDriver: ModelDriver | null
 }

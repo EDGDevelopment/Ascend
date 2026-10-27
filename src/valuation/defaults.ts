@@ -1,26 +1,17 @@
-import { PRESETS, addMonths, type ModelInput, type MonthlyRow } from './engine'
+import { PRESETS, addMonths, type ModelInput } from './engine'
 
 /** The last complete month before today, as "YYYY-MM". */
 export function lastCompleteMonth(now = new Date()): string {
   return addMonths(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`, -1)
 }
 
-/** 36 months of plausible sample figures so the page never opens blank. Deterministic, replaced by the client's own numbers. */
-function sampleMonths(end: string): MonthlyRow[] {
-  return Array.from({ length: 36 }, (_, t) => {
-    const season = 1 + 0.14 * Math.sin(((t + 1) / 12) * 2 * Math.PI)
-    const wobble = 1 + 0.025 * Math.sin(t * 2.1)
-    const revenue = Math.round(((30000 + 520 * t) * season * wobble) / 100) * 100
-    return { month: addMonths(end, t - 35), revenue, expenses: Math.round((revenue * 0.84 + 1200) / 100) * 100 }
-  })
-}
-
-export function defaultInput(orgType: ModelInput['orgType'] = 'local'): ModelInput {
+/** A starting point with no months in it. The client's own spreadsheet supplies those. */
+export function blankInput(orgType: ModelInput['orgType'] = 'local'): ModelInput {
   const p = PRESETS.shop
   return {
     orgType,
     companyName: '',
-    monthly: sampleMonths(lastCompleteMonth()),
+    monthly: [],
     local: {
       // Profit, manager wage and upkeep are left blank so they are worked out from the months and from owner pay.
       ownerPay: 42000,

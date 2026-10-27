@@ -38,7 +38,7 @@ Excel template / CSV / form
    nonprofit.ts  cash runway, reserves, funding mix, grant pipeline
    model.ts      entry point and validation
         |
- public.valuation_models               inputs + latest output, one row per user (RLS)
+ public.valuation_datasets             one row per uploaded spreadsheet: inputs + latest output (RLS)
         |
  src/data/useDashboardData.ts          swaps sample series for the client's own when a model exists
 ```
@@ -160,7 +160,7 @@ The app works without any of this (it calculates in the browser and keeps result
 To run it on Supabase:
 
 ```bash
-supabase db push                        # creates public.valuation_models (migration 0002)
+supabase db push                        # creates public.valuation_datasets (migration 0003; 0002 is unused)
 supabase functions deploy valuation     # JWT verification stays on
 ```
 

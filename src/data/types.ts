@@ -22,81 +22,7 @@ export interface Kpi {
   spark: number[]
 }
 
-export interface HealthFactor {
-  name: string
-  score: number
-  note: string
-}
-
-export type Impact = 'High' | 'Medium' | 'Low'
-export type OpportunityStatus = 'New' | 'Reviewing' | 'Done'
-
-export interface Opportunity {
-  id: string
-  title: string
-  summary: string
-  detail: string
-  area: 'Revenue' | 'Costs' | 'Inventory' | 'Cash flow' | 'Customers'
-  impact: Impact
-  /** Model confidence from 0 to 1. */
-  confidence: number
-  /** Estimated monthly value in dollars. */
-  monthlyValue: number
-  status: OpportunityStatus
-}
-
-export interface ActivityItem {
-  id: string
-  kind: 'forecast' | 'signal' | 'data' | 'opportunity'
-  text: string
-  time: string
-}
-
-export interface DemandPoint {
-  day: string
-  actual: number
-  potential: number
-}
-
-export type SourceStatus = 'Healthy' | 'Syncing' | 'Needs attention'
-
-export interface DataSource {
-  id: string
-  name: string
-  type: string
-  status: SourceStatus
-  lastSync: string
-  records: number
-  coverage: string
-}
-
-export interface ModelInfo {
-  name: string
-  version: string
-  architecture: string
-  patchLength: number
-  stride: number
-  contextMonths: number
-  horizonDays: number
-  parameters: string
-  lastTrained: string
-  status: string
-}
-
-export interface ModelAccuracyPoint {
-  horizon: string
-  error: number
-}
-
-export interface TrainingRun {
-  id: string
-  date: string
-  dataset: string
-  mape: number
-  note: string
-}
-
-/** Set when the charts come from the client's own monthly figures instead of the sample data. */
+/** Facts about how the dashboard figures were worked out from the client's spreadsheet. */
 export interface ModelDriver {
   companyName: string
   orgType: 'local' | 'nonprofit'
@@ -112,18 +38,15 @@ export interface ModelDriver {
 }
 
 export interface DashboardData {
-  business: { name: string; industry: string; location: string }
-  healthScore: number
-  healthChange: number
-  healthFactors: HealthFactor[]
+  /** What the dashboards call the organisation: the name they gave, or their dataset's name. */
+  name: string
+  /** Label of the last month of real figures, for example "Sep 26". */
+  asOf: string
+  /** Which charts have data: expenses and cash flow need monthly expenses in the spreadsheet. */
+  metrics: MetricKey[]
   kpis: Kpi[]
   series: MetricSeries
-  opportunities: Opportunity[]
-  activity: ActivityItem[]
-  demand: DemandPoint[]
-  sources: DataSource[]
-  model: ModelInfo
-  accuracy: ModelAccuracyPoint[]
-  trainingRuns: TrainingRun[]
-  modelDriver: ModelDriver | null
+  /** Expected revenue over the next 12 months, with its range. */
+  next12: { low: number; mid: number; high: number }
+  modelDriver: ModelDriver
 }

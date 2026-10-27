@@ -20,7 +20,7 @@ const nav = [
   { to: '/dashboard/forecasts', label: 'Forecasts', icon: LineChart },
   { to: '/dashboard/valuation', label: 'Financial model', icon: Calculator },
   { to: '/dashboard/opportunities', label: 'Opportunities', icon: Sparkles },
-  { to: '/dashboard/data', label: 'Data sources', icon: Database },
+  { to: '/dashboard/data', label: 'Your data', icon: Database },
   { to: '/dashboard/model', label: 'Model', icon: Network },
 ]
 
@@ -29,7 +29,7 @@ const titles: Record<string, string> = {
   '/dashboard/forecasts': 'Forecasts',
   '/dashboard/valuation': 'Financial model',
   '/dashboard/opportunities': 'Opportunities',
-  '/dashboard/data': 'Data sources',
+  '/dashboard/data': 'Your data',
   '/dashboard/model': 'Model',
 }
 

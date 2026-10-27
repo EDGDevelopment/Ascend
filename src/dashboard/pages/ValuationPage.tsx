@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { AlertTriangle, ChevronDown, Play } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
-import { defaultInput } from '@/valuation/defaults'
-import type { ModelInput, OrgType } from '@/valuation/engine'
-import { downloadTemplate, parseSpreadsheet } from '@/valuation/spreadsheet'
+import type { OrgType } from '@/valuation/engine'
+import { downloadTemplate } from '@/valuation/spreadsheet'
+import { useUpload } from '@/valuation/useUpload'
 import { useValuation } from '@/valuation/useValuation'
 import { monthLabel } from '@/data/useDashboardData'
 import { Card } from '../components/Card'
@@ -24,6 +25,7 @@ import { NonprofitMore, NonprofitQuestions } from '../valuation/NonprofitInputs'
 import { NonprofitCashStage, NonprofitDetails } from '../valuation/NonprofitResults'
 import { Step } from '../valuation/Step'
 import { UploadCard } from '../valuation/UploadCard'
+import { UploadPrompt } from '../valuation/UploadPrompt'
 
 const TYPES: { id: OrgType; label: string; blurb: string }[] = [
   { id: 'local', label: 'Local business', blurb: 'Shop, café, salon, trades, studio' },
@@ -63,38 +65,15 @@ function More({ title, hint, children }: { title: string; hint?: string; childre
 }
 
 export default function ValuationPage() {
-  const { input, output, source, running, error, saveWarning, loadId, setInput, replaceInput, run } = useValuation()
-  const [fileMessage, setFileMessage] = useState<{ text: string; bad?: boolean } | null>(null)
+  const { ready, active, input, output, source, running, error, saveWarning, loadId, setInput, replaceInput, run } = useValuation()
+  const { upload, message: fileMessage, busy } = useUpload()
   const [tab, setTab] = useState('overview')
 
-  async function onFile(file: File | undefined) {
-    if (!file) return
-    try {
-      const parsed = await parseSpreadsheet(file)
-      if (parsed.monthly.length < 12) {
-        setFileMessage({ text: parsed.warnings[0] ?? `Found ${parsed.monthly.length} usable months. Ascend needs at least 12.`, bad: true })
-        return
-      }
-      const next: ModelInput = {
-        ...input,
-        orgType: parsed.orgType ?? input.orgType,
-        companyName: parsed.companyName ?? input.companyName,
-        monthly: parsed.monthly,
-        // Anything the file leaves out keeps its current value, so a CSV only replaces the months.
-        local: { ...input.local, ...parsed.local },
-        nonprofit: { ...input.nonprofit, ...parsed.nonprofit, mix: { ...input.nonprofit.mix, ...parsed.nonprofit.mix } },
-      }
-      replaceInput(next)
-      const details = Object.keys(parsed.local).length + Object.keys(parsed.nonprofit).length
-      setFileMessage({ text: `Loaded ${parsed.monthly.length} months from ${file.name}${details ? ` and ${details} details` : ''}.${parsed.warnings.length ? ` ${parsed.warnings.join(' ')}` : ''}` })
-    } catch (e) {
-      setFileMessage({ text: e instanceof Error ? e.message : 'That file could not be read.', bad: true })
-    }
-  }
+  if (!ready) return <p role="status" className="py-10 text-center text-sm text-ink-muted">Loading your data...</p>
+  if (!active) return <UploadPrompt />
 
   const rows = input.monthly
-  const isSample = JSON.stringify(rows) === JSON.stringify(defaultInput().monthly)
-  const summary = `${rows.length} months loaded, ${monthLabel(rows[0].month)} to ${monthLabel(rows[rows.length - 1].month)}${rows.every((r) => r.expenses !== undefined) ? ', with expenses' : ', revenue only'}.`
+  const summary = `${active.name}: ${rows.length} months, ${monthLabel(rows[0].month)} to ${monthLabel(rows[rows.length - 1].month)}${rows.every((r) => r.expenses !== undefined) ? ', with expenses' : ', revenue only'}.`
 
   const current = output && output.input.orgType === input.orgType ? output : null
   const stale = current !== null && JSON.stringify(current.input) !== JSON.stringify(input)
@@ -125,8 +104,11 @@ export default function ValuationPage() {
         })}
       </div>
 
-      <Step n={1} title="Add your months" hint="Revenue for each month, and spending if you have it. Two years or more gives the best forecast.">
-        <UploadCard onFile={(f) => void onFile(f)} onTemplate={() => void downloadTemplate(input.orgType)} message={fileMessage} isSample={isSample} summary={summary} />
+      <Step n={1} title="Your months" hint="Revenue for each month, and spending if you have it. Uploading another spreadsheet adds it to your list and switches to it.">
+        <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={fileMessage} busy={busy} summary={summary} />
+        <p className="mt-2 text-sm text-ink-muted">
+          Rename, switch or delete spreadsheets on the <Link to="/dashboard/data" className="font-medium text-accent-ink hover:underline">Your data</Link> page.
+        </p>
         <More title="Review or edit your months" hint="Type over any figure, or add and remove months.">
           <MonthlyTable input={input} loadId={loadId} setInput={setInput} replaceInput={replaceInput} />
         </More>

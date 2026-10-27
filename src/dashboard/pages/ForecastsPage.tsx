@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '../components/Card'
 import { ForecastChart } from '../components/ForecastChart'
 import { MetricTabs } from '../components/MetricTabs'
+import { NeedsData } from '../components/NeedsData'
 
 export default function ForecastsPage() {
   const data = useDashboardData()
@@ -16,13 +17,16 @@ export default function ForecastsPage() {
   const [shift, setShift] = useState(0)
   const scenario = 1 + shift / 100
 
-  const points = data.series[metric]
+  if (!data) return <NeedsData />
+
+  const shown = data.metrics.includes(metric) ? metric : 'revenue'
+  const points = data.series[shown]
   const rows = points.filter((p) => p.actual === null)
 
   return (
     <div className="mx-auto max-w-[1280px] space-y-6">
       <div className="grid gap-6 xl:grid-cols-3">
-        <Card className="xl:col-span-2" title={`${metricLabels[metric]}, next 90 days`} action={<MetricTabs value={metric} onChange={setMetric} />}>
+        <Card className="xl:col-span-2" title={`${metricLabels[shown]}, next 90 days`} action={<MetricTabs value={shown} onChange={setMetric} available={data.metrics} />}>
           <ForecastChart points={points} height={340} scenario={scenario} />
         </Card>
 
@@ -48,14 +52,14 @@ export default function ForecastsPage() {
           <Button variant="secondary" size="sm" className="mt-5" onClick={() => setShift(0)} disabled={shift === 0}>
             <RotateCcw size={14} aria-hidden="true" /> Reset
           </Button>
-          <p className="mt-5 text-xs text-ink-faint">Illustrative. The model will re-run with your assumptions.</p>
+          <p className="mt-5 text-xs text-ink-faint">Illustrative: this slider only scales the chart and table. Use What if on the Financial model page for a full recalculation.</p>
         </Card>
       </div>
 
       <Card title="Forecast detail" padded={false}>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[480px] text-left text-sm">
-            <caption className="sr-only">{`${metricLabels[metric]} forecast by month`}</caption>
+            <caption className="sr-only">{`${metricLabels[shown]} forecast by month`}</caption>
             <thead>
               <tr className="border-y border-line-soft bg-page text-xs text-ink-faint">
                 <th scope="col" className="px-5 py-2.5 font-medium">Month</th>

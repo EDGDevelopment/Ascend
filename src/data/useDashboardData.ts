@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
-import { useAuth } from '@/auth/useAuth'
 import { useValuation } from '@/valuation/useValuation'
 import type { Band, ModelOutput } from '@/valuation/engine'
-import { mockDashboard } from './mockDashboard'
 import type { DashboardData, Kpi, MetricKey, MetricSeries, ModelDriver, SeriesPoint } from './types'
 
 const SHOWN_HISTORY = 18
@@ -31,28 +29,32 @@ function build(history: { month: string; value: number }[], future: string[], ba
   return points
 }
 
-function kpiFor(base: Kpi, points: SeriesPoint[]): Kpi {
+function kpiFor(key: MetricKey, label: string, points: SeriesPoint[], inverse = false): Kpi {
   const actuals = points.filter((p) => p.actual !== null).map((p) => p.actual as number)
   const value = actuals[actuals.length - 1]
   const prev = actuals[actuals.length - 2]
-  return { ...base, value, change: prev ? Number((((value - prev) / Math.abs(prev)) * 100).toFixed(1)) : 0, spark: actuals.slice(-12) }
+  return { key, label, value, change: prev ? Number((((value - prev) / Math.abs(prev)) * 100).toFixed(1)) : 0, inverse, spark: actuals.slice(-12) }
 }
 
-/**
- * Replaces the sample series with the client's own months and the model's forecast. Revenue always comes from
- * the model. Expenses and cash flow do too when the client gave monthly expenses; otherwise they stay sample data.
- */
-function withModel(base: DashboardData, o: ModelOutput): DashboardData {
+/** Everything the dashboards show, worked out from the client's own months and the model's forecast. Nothing here is sample data. */
+function fromModel(o: ModelOutput, fallbackName: string): DashboardData {
   const rows = o.input.monthly
   const f = o.forecast
-  const series: MetricSeries = { ...base.series }
-  series.revenue = build(rows.map((r) => ({ month: r.month, value: r.revenue })), f.futureMonths, f.revenue)
+  const none: SeriesPoint[] = []
+  const series: MetricSeries = {
+    revenue: build(rows.map((r) => ({ month: r.month, value: r.revenue })), f.futureMonths, f.revenue),
+    expenses: none,
+    cashFlow: none,
+  }
+  const metrics: MetricKey[] = ['revenue']
+  const kpis: Kpi[] = [kpiFor('revenue', 'Revenue', series.revenue)]
   if (f.expenses && f.net) {
     series.expenses = build(rows.map((r) => ({ month: r.month, value: r.expenses as number })), f.futureMonths, f.expenses)
     series.cashFlow = build(rows.map((r) => ({ month: r.month, value: r.revenue - (r.expenses as number) })), f.futureMonths, f.net)
+    metrics.push('expenses', 'cashFlow')
+    kpis.push(kpiFor('expenses', 'Expenses', series.expenses, true), kpiFor('cashFlow', 'Cash flow', series.cashFlow))
   }
-  const kpis = base.kpis.map((k) => (k.key === 'revenue' || (f.expenses && (k.key === 'expenses' || k.key === 'cashFlow')) ? kpiFor(k, series[k.key as MetricKey]) : k))
-  const driver: ModelDriver = {
+  const modelDriver: ModelDriver = {
     companyName: o.input.companyName,
     orgType: o.input.orgType,
     computedAt: o.computedAt,
@@ -61,21 +63,23 @@ function withModel(base: DashboardData, o: ModelOutput): DashboardData {
     coversExpenses: f.expenses !== null,
     growth: f.growth.p50,
   }
-  return { ...base, series, kpis, modelDriver: driver }
+  return {
+    name: o.input.companyName.trim() || fallbackName,
+    asOf: monthLabel(rows[rows.length - 1].month),
+    metrics,
+    kpis,
+    series,
+    next12: { low: f.next12.revenue.p10, mid: f.next12.revenue.p50, high: f.next12.revenue.p90 },
+    modelDriver,
+  }
 }
 
 /**
- * Single seam for dashboard data. Returns bundled sample data until the client runs the financial model; after
- * that, revenue (and expenses and cash flow, if they gave monthly expenses) come from their own figures and
- * forecast, and everything else is still sample data. Later this is where Supabase queries or the model API
- * will be called.
+ * Single seam for dashboard data. Returns null until the client has uploaded a spreadsheet and the forecast has
+ * been worked out from it; pages show an upload prompt in that case.
  */
-export function useDashboardData(): DashboardData {
-  const { user } = useAuth()
-  const { output } = useValuation()
-  const businessName = user?.businessName?.trim()
-  return useMemo(() => {
-    const base = businessName ? { ...mockDashboard, business: { ...mockDashboard.business, name: businessName } } : mockDashboard
-    return output ? withModel(base, output) : base
-  }, [businessName, output])
+export function useDashboardData(): DashboardData | null {
+  const { output, active } = useValuation()
+  const name = active?.name ?? ''
+  return useMemo(() => (output ? fromModel(output, name) : null), [output, name])
 }

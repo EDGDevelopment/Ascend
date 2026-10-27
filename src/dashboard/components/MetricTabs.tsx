@@ -1,10 +1,12 @@
 import type { MetricKey } from '@/data/types'
 import { metricLabels } from '@/data/metrics'
 
-export function MetricTabs({ value, onChange }: { value: MetricKey; onChange: (m: MetricKey) => void }) {
+export function MetricTabs({ value, onChange, available }: { value: MetricKey; onChange: (m: MetricKey) => void; available?: MetricKey[] }) {
+  const shown = (Object.keys(metricLabels) as MetricKey[]).filter((m) => !available || available.includes(m))
+  if (shown.length < 2) return null
   return (
     <div role="tablist" aria-label="Metric" className="inline-flex rounded-lg bg-sunken p-1">
-      {(Object.keys(metricLabels) as MetricKey[]).map((m) => (
+      {shown.map((m) => (
         <button
           key={m}
           role="tab"

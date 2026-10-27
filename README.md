@@ -41,6 +41,7 @@ See [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). Copy `.env.example` to `.e
 | `/forgot-password`, `/reset-password` | Public | Password recovery |
 | `/dashboard` | Signed in | Overview |
 | `/dashboard/forecasts` | Signed in | Forecasts and scenario explorer |
+| `/dashboard/valuation` | Signed in | Financial model: 12-month forecast, plus value (local business) or cash runway (non-profit) |
 | `/dashboard/opportunities` | Signed in | Ranked growth opportunities |
 | `/dashboard/data` | Signed in | Data sources and CSV upload (mock) |
 | `/dashboard/model` | Signed in | Model details and training runs (mock) |
@@ -55,7 +56,8 @@ src/
   data/        Types and mock data behind useDashboardData
   lib/         Env, Supabase client, formatters
   pages/       Landing and auth screens
-supabase/      SQL migrations
+supabase/      SQL migrations and the valuation Edge Function ([docs/VALUATION.md](docs/VALUATION.md))
+training/      Training code for the Ascend Patch Forecaster (Python, optional)
 docs/          Setup guides
 ```
 

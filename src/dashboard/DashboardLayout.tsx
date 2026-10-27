@@ -4,6 +4,7 @@ import {
   Database,
   LayoutDashboard,
   LineChart,
+  Calculator,
   LogOut,
   Menu,
   Network,
@@ -17,6 +18,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 const nav = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/dashboard/forecasts', label: 'Forecasts', icon: LineChart },
+  { to: '/dashboard/valuation', label: 'Financial model', icon: Calculator },
   { to: '/dashboard/opportunities', label: 'Opportunities', icon: Sparkles },
   { to: '/dashboard/data', label: 'Data sources', icon: Database },
   { to: '/dashboard/model', label: 'Model', icon: Network },
@@ -25,6 +27,7 @@ const nav = [
 const titles: Record<string, string> = {
   '/dashboard': 'Overview',
   '/dashboard/forecasts': 'Forecasts',
+  '/dashboard/valuation': 'Financial model',
   '/dashboard/opportunities': 'Opportunities',
   '/dashboard/data': 'Data sources',
   '/dashboard/model': 'Model',

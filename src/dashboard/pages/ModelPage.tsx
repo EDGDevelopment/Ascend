@@ -4,7 +4,7 @@ import { Card } from '../components/Card'
 import { NeedsData } from '../components/NeedsData'
 
 // Measured by scripts/backtest.mjs on 31 public monthly series (US Census retail by store type, airline passengers,
-// Quebec car sales). See docs/VALUATION.md.
+// Quebec car sales). See docs/guides/VALUATION.md.
 const BENCHMARKS = [
   { history: '36 months', accuracy: '95.4%', ranges: '80.0%' },
   { history: '18 months', accuracy: '95.0%', ranges: '82.7%' },

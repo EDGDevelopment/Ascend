@@ -159,7 +159,7 @@ function simulate(fit: Fit, h: number, errors: number[] | null): number[] {
  * In-sample one-step errors understate how far off a multi-month forecast can be (the model is also
  * uncertain about its own level and trend). Widening the simulated errors by this factor made the
  * P10-P90 range contain the true value about 80% of the time on 40 synthetic businesses held out
- * from tuning. Re-check with the calibration script in docs/VALUATION.md if the method changes.
+ * from tuning. Re-check with the calibration script in docs/guides/VALUATION.md if the method changes.
  */
 /**
  * rangeInflation widens the simulated one-step errors. memberConc sets how tightly each simulated future sticks to

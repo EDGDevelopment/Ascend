@@ -5,7 +5,7 @@
 // At many past dates it gives the engine only the last N months, forecasts the next 12, and scores the result
 // against what really happened. It reports the average miss (MAPE) against the naive guess "same month last
 // year", and how often the real value fell inside the P10-P90 range (the range promises about 80%).
-// Needs Node 22.18+ (runs the engine's .ts files directly). See docs/VALUATION.md for the datasets used.
+// Needs Node 22.18+ (runs the engine's .ts files directly). See docs/guides/VALUATION.md for the datasets used.
 import fs from 'node:fs'
 import { runForecast } from '../supabase/functions/_shared/valuation/forecast.ts'
 import { addMonths } from '../supabase/functions/_shared/valuation/rand.ts'

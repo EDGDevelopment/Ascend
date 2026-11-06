@@ -30,7 +30,7 @@ Open http://localhost:5173. Without Supabase credentials the app runs in demo mo
 
 ## Connecting Supabase
 
-See [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). Copy `.env.example` to `.env.local` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. Never commit `.env.local`.
+See [docs/guides/SUPABASE_SETUP.md](docs/guides/SUPABASE_SETUP.md). Copy `.env.example` to `.env.local` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. Never commit `.env.local`.
 
 ## Routes
 
@@ -56,9 +56,9 @@ src/
   data/        Types and mock data behind useDashboardData
   lib/         Env, Supabase client, formatters
   pages/       Landing and auth screens
-supabase/      SQL migrations and the valuation Edge Function ([docs/VALUATION.md](docs/VALUATION.md))
+supabase/      SQL migrations and the valuation Edge Function ([docs/guides/VALUATION.md](docs/guides/VALUATION.md))
 training/      Training code for the Ascend Patch Forecaster (Python, optional)
-docs/          Setup guides
+docs/          Guides, project deliverables, presentations and certificates (see docs/README.md)
 ```
 
 ## Status

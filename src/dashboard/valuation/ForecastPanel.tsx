@@ -44,6 +44,7 @@ export function ForecastStage({ output }: { output: ModelOutput }) {
     <Stage
       title="Your next 12 months"
       subtitle={`Each thin line is one way the year could go. The bold line is the most likely.${change !== null ? ` Expected ${label}: ${short(n12.p50)}, ${formatPercent(change * 100, 0)} on the last 12 months.` : ''}`}
+      explain={`Explain my ${label} forecast for the next 12 months: what the range means and how much I should trust it.`}
       action={hasNet ? <MetricTabs value={active} onChange={setMetric} /> : undefined}
     >
       <FanChart

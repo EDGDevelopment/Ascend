@@ -3,6 +3,7 @@ import { ArrowUp, MessageCircle, RotateCcw, Sparkles, Square, X } from 'lucide-r
 import { buildDigest } from '../../supabase/functions/_shared/chat/digest'
 import { useAuth } from '@/auth/useAuth'
 import { useValuation } from '@/valuation/useValuation'
+import { ASK_EVENT } from './chatBus'
 import { askAssistant, ChatError, type ChatMessage } from './chatService'
 import { loadChat, loadOpen, saveChat, saveOpen } from './chatStore'
 import { Markdown } from './Markdown'
@@ -97,6 +98,29 @@ export function ChatWidget() {
     },
     [busy, context, messages],
   )
+
+  // "Explain this" buttons elsewhere in the app ask through here. If an answer is still arriving, put the question
+  // in the box instead of interrupting it.
+  const ask = useCallback(
+    (question: string) => {
+      setOpen(true)
+      if (busy) setDraft(question)
+      else void send(question)
+    },
+    [busy, send],
+  )
+  const askRef = useRef(ask)
+  useEffect(() => {
+    askRef.current = ask
+  }, [ask])
+  useEffect(() => {
+    const onAsk = (e: Event) => {
+      const question = (e as CustomEvent<unknown>).detail
+      if (typeof question === 'string' && question.trim()) askRef.current(question)
+    }
+    window.addEventListener(ASK_EVENT, onAsk)
+    return () => window.removeEventListener(ASK_EVENT, onAsk)
+  }, [])
 
   const reset = () => {
     abort.current?.abort()

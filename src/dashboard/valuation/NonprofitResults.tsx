@@ -24,6 +24,7 @@ export function NonprofitCashStage({ output }: { output: ModelOutput }) {
     <Stage
       title="Your bank balance, next 12 months"
       subtitle={`Each thin line is one way the year could go, starting from ${short(p.cashOnHand)} today. The bold line is the most likely.`}
+      explain="Explain my projected bank balance over the next 12 months and what the best, most likely and cautious cases mean for us."
     >
       <FanChart
         paths={N.cashSamples}

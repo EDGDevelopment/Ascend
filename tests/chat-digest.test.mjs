@@ -34,6 +34,12 @@ test('digest includes the forecast, value range and break-even', () => {
   assert.match(text, /Break-even revenue/)
 })
 
+test('digest lists the biggest levers so the plan and chat can quote them', () => {
+  const text = describeDataset(ds('a', 'Cafe'), true)
+  assert.match(text, /Biggest levers/)
+  assert.match(text, /profit a year/)
+})
+
 test('a spreadsheet with no results yet is still described', () => {
   assert.match(describeDataset(ds('a', 'Cafe', false), true), /has not been worked out/)
 })

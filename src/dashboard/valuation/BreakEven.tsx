@@ -34,7 +34,7 @@ export function BreakEven({ output }: { output: ModelOutput }) {
   const mos = c.marginOfSafety
   return (
     <div className="space-y-6">
-      <Stage title="How much do you need to sell each month?" subtitle="Some costs are paid whatever you sell. The rest rise and fall with sales. Break-even is where sales cover both.">
+      <Stage title="How much do you need to sell each month?" subtitle="Some costs are paid whatever you sell. The rest rise and fall with sales. Break-even is where sales cover both." explain="Explain my break-even number: what are my fixed and variable costs, and how safe am I above break-even?">
         {be !== null ? (
           <>
             <p className="ramp-text tabular text-5xl font-semibold tracking-tight sm:text-6xl">{short(be)}</p>

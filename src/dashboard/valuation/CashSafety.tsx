@@ -19,7 +19,7 @@ export function CashSafety({ output }: { output: ModelOutput }) {
   const months = Number.isFinite(c.monthsOfCash) ? c.monthsOfCash : 24
   const target = output.input.local.reserveTargetMonths ?? 3
   return (
-    <Stage title="Will you have enough cash?" subtitle={`Each thin line is one way the next 12 months could go, starting from ${short(output.input.local.cashOnHand ?? 0)} in the bank.`}>
+    <Stage title="Will you have enough cash?" subtitle={`Each thin line is one way the next 12 months could go, starting from ${short(output.input.local.cashOnHand ?? 0)} in the bank.`} explain="Explain my cash safety: how long my cash lasts and what the chance of running short means for me.">
       <FanChart paths={c.samples} futureMonths={output.forecast.futureMonths} startValue={output.input.local.cashOnHand ?? 0} median={c.cash.p50} format={formatUsdCompact} ariaLabel={`Simulated bank balance for the next 12 months. Most likely ${short(c.cash.p50[11])} in a year, between ${short(c.cash.p10[11])} and ${short(c.cash.p90[11])}.`} />
       <ColoredStats
         stats={[

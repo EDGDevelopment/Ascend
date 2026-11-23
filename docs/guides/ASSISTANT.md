@@ -17,6 +17,23 @@ The **digest** holds, for each spreadsheet: every month of revenue and expenses,
 
 The open spreadsheet is flagged, so "my best month" means the one on screen. Other uploaded spreadsheets are included too (up to about 120,000 characters).
 
+## Explain this buttons
+
+A small **Explain this** button sits beside the main numbers: business value, cash runway, the forecast, break-even, cash safety, alerts, the takeaways and the ranked levers. It opens the chat with a question already asked and sent. In code it is one line: `<Stage explain="...">` or `<Card explain="...">` (see `ExplainButton.tsx`). Any component can also call `askAscend(question)` from `src/chat/chatBus.ts`. If an answer is still arriving, the question is put in the input box instead of interrupting it.
+
+## AI growth plan
+
+The **Opportunities** page has a **Your AI growth plan** card. One click writes 4 to 6 ranked, specific opportunities for the open spreadsheet. Each has a category, effort ("quick win" to "bigger project"), why it matters, the user's own figures that support it, what it could be worth, and a first step for this week, plus an **Ask about this** link into the chat.
+
+```
+src/dashboard/components/AiOpportunities.tsx        the card
+src/chat/opportunitiesService.ts                     calls the function; saves the plan in the browser
+supabase/functions/opportunities/index.ts            Edge Function (JWT required, 6 plans a minute per user)
+supabase/functions/_shared/chat/opportunities.ts     the instructions, and a strict checker for the reply
+```
+
+It uses the same digest as the chat, which includes the "Biggest levers" table (the effect of a 10% move in price, volume and costs), so impact figures come from the user's own numbers. The model must reply in a fixed JSON shape; anything that does not fit is rejected, text is length-limited and unexpected fields are dropped before the page sees it. Plans are saved per user and spreadsheet in the browser, and the card says when the numbers have changed since the plan was written.
+
 ## Safety
 
 - The Azure OpenAI key is a Supabase secret and never reaches the browser. Only signed-in users can call the function.
@@ -32,6 +49,7 @@ The function uses an Azure OpenAI chat deployment (currently `gpt-4.1-mini`). Se
 ```bash
 npx supabase secrets set AZURE_OPENAI_ENDPOINT=https://<resource>.services.ai.azure.com/ AZURE_OPENAI_API_KEY=<key> AZURE_OPENAI_DEPLOYMENT=<deployment-name>
 npx supabase functions deploy chat
+npx supabase functions deploy opportunities
 ```
 
 Optional: `AZURE_OPENAI_API_VERSION` (default `2025-01-01-preview`) and `ALLOWED_ORIGINS` (shared with the valuation function). The chat is not available in demo mode because it needs the Supabase function.

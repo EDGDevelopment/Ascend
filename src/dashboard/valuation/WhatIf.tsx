@@ -63,7 +63,7 @@ export function WhatIf({ output }: { output: ModelOutput }) {
     const target = output.input.nonprofit.reserveTargetMonths
     return (
       <div className="space-y-6">
-        <Stage title="What if your income or spending changed?" subtitle="Move the sliders and see what it does to your bank balance a year from now.">
+        <Stage title="What if your income or spending changed?" subtitle="Move the sliders and see what it does to your bank balance a year from now." explain="Explain this what-if tool and tell me which change to income or spending would help us most.">
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="space-y-6">
               <Slider label="Income" value={income} min={-0.3} max={0.3} step={0.01} onChange={setIncome} format={pct} hint="A lost grant or a good fundraising year." />
@@ -84,7 +84,7 @@ export function WhatIf({ output }: { output: ModelOutput }) {
   const L = local!
   return (
     <div className="space-y-6">
-      <Stage title="What if you changed something?" subtitle="Move a slider and watch the next 12 months of profit, and what the business is worth, change. Nothing is saved.">
+      <Stage title="What if you changed something?" subtitle="Move a slider and watch the next 12 months of profit, and what the business is worth, change. Nothing is saved." explain="Explain this what-if tool and tell me which single change would help my business most.">
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="space-y-6">
             <Slider label="Prices" value={adj.price} min={-0.2} max={0.2} step={0.01} onChange={(v) => set({ price: v })} format={pct} hint="What you charge for each sale." />

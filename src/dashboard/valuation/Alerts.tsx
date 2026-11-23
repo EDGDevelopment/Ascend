@@ -7,7 +7,7 @@ import { OUTCOME } from './ramp'
 function Block({ title, s, goodWhen }: { title: string; s: SeriesSignals; goodWhen: 'high' | 'low' }) {
   const items = [...s.signals].reverse()
   return (
-    <Card title={title}>
+    <Card title={title} explain={`Explain the unusual ${title.toLowerCase()} months flagged for me, and whether I should be worried.`}>
       {s.shift && (
         <p className="mb-4 flex items-start gap-2 rounded-lg border border-line bg-warn-soft px-4 py-3 text-sm text-warn">
           {s.shift.direction === 'up' ? <TrendingUp size={16} className="mt-0.5 shrink-0" aria-hidden="true" /> : <TrendingDown size={16} className="mt-0.5 shrink-0" aria-hidden="true" />}

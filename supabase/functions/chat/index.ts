@@ -1,57 +1,17 @@
 // Supabase Edge Function: the Ascend Assistant chatbot.
 // POST { messages: [{ role, content }], context: string } where `context` is the digest of the user's own
 // spreadsheets and results built in the browser. Streams the answer back as plain text.
-// JWT verification is on by default, so only signed-in Ascend users can call it. The Anthropic key lives in the
+// JWT verification is on by default, so only signed-in Ascend users can call it. The Azure OpenAI details live in the
 // function's secrets (AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY, AZURE_OPENAI_DEPLOYMENT) and never reaches the browser.
 import { APP_GUIDE, CHAT_RULES, MAX_DIGEST_CHARS } from '../_shared/chat/digest.ts'
+import { azureConfig, corsFor, createLimiter, userKey } from '../_shared/ai/http.ts'
 
-const API_VERSION = Deno.env.get('AZURE_OPENAI_API_VERSION') ?? '2025-01-01-preview'
 const MAX_TOKENS = 1200
 const MAX_MESSAGES = 30
 const MAX_MESSAGE_CHARS = 4000
-
-// Same origin rules as the valuation function: local dev plus ALLOWED_ORIGINS.
-const allowed = new Set([
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  ...(Deno.env.get('ALLOWED_ORIGINS') ?? '').split(',').map((o) => o.trim()).filter(Boolean),
-])
-const baseCors = {
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-}
-const corsFor = (req: Request): Record<string, string> => {
-  const origin = req.headers.get('Origin')
-  return origin && allowed.has(origin) ? { ...baseCors, 'Access-Control-Allow-Origin': origin, Vary: 'Origin' } : {}
-}
-
 // Best-effort limit per signed-in user: 20 questions a minute (in-memory, per instance).
-const WINDOW_MS = 60_000
-const MAX_ASKS = 20
-const hits = new Map<string, number[]>()
+const limited = createLimiter(20, 60_000)
 
-function userKey(req: Request): string {
-  try {
-    const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '')
-    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
-    return String(payload.sub ?? 'anon')
-  } catch {
-    return 'anon'
-  }
-}
-
-function limited(key: string): boolean {
-  const now = Date.now()
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS)
-  if (recent.length >= MAX_ASKS) {
-    hits.set(key, recent)
-    return true
-  }
-  recent.push(now)
-  hits.set(key, recent)
-  if (hits.size > 5000) for (const [k, v] of hits) if (v.every((t) => now - t >= WINDOW_MS)) hits.delete(k)
-  return false
-}
 
 interface Msg {
   role: 'user' | 'assistant'
@@ -86,10 +46,8 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
   if (req.method !== 'POST') return json({ error: 'Use POST.' }, 405)
 
-  const apiKey = Deno.env.get('AZURE_OPENAI_API_KEY')
-  const endpoint = Deno.env.get('AZURE_OPENAI_ENDPOINT')
-  const deployment = Deno.env.get('AZURE_OPENAI_DEPLOYMENT')
-  if (!apiKey || !endpoint || !deployment) return json({ error: 'The assistant is not set up yet: the Azure OpenAI secrets are missing.' }, 503)
+  const azure = azureConfig()
+  if (!azure) return json({ error: 'The assistant is not set up yet: the Azure OpenAI secrets are missing.' }, 503)
   if (limited(userKey(req))) return json({ error: 'You are asking quickly. Wait a few seconds and try again.' }, 429, { 'Retry-After': '30' })
 
   const text = await req.text()
@@ -97,12 +55,11 @@ Deno.serve(async (req) => {
   const parsed = parseBody(text)
   if (typeof parsed === 'string') return json({ error: parsed }, 400)
 
-  const url = `${endpoint.replace(/\/+$/, '')}/openai/deployments/${encodeURIComponent(deployment)}/chat/completions?api-version=${encodeURIComponent(API_VERSION)}`
   let upstream: Response
   try {
-    upstream = await fetch(url, {
+    upstream = await fetch(azure.url, {
       method: 'POST',
-      headers: { 'api-key': apiKey, 'content-type': 'application/json' },
+      headers: { 'api-key': azure.apiKey, 'content-type': 'application/json' },
       body: JSON.stringify({
         max_tokens: MAX_TOKENS,
         temperature: 0.2,

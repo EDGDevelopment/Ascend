@@ -17,17 +17,14 @@ export function Card({ title, subtitle, action, explain, children, className = '
   return (
     <section className={`rounded-card border border-line bg-surface ${className}`}>
       {(title || action || explain) && (
-        <header className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
-          <div>
+        // "Explain this" always sits top-right of the header. Tabs or other actions drop to their own row below the title.
+        <header className={`flex justify-between gap-3 px-5 pt-4 ${explain ? 'items-start' : 'flex-wrap items-center'}`}>
+          <div className={explain ? 'min-w-0 flex-1' : undefined}>
             {title && <h2 className="text-[15px] font-semibold">{title}</h2>}
             {subtitle && <p className="mt-0.5 text-[13px] text-ink-faint">{subtitle}</p>}
+            {explain && action && <div className="mt-3">{action}</div>}
           </div>
-          {(explain || action) && (
-            <div className="flex flex-wrap items-center gap-2">
-              {explain && <ExplainButton question={explain} />}
-              {action}
-            </div>
-          )}
+          {explain ? <ExplainButton question={explain} /> : action}
         </header>
       )}
       <div className={padded ? 'p-5' : ''}>{children}</div>

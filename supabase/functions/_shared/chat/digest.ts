@@ -7,6 +7,7 @@
  * browser (which builds it from the user's own datasets) and the tests.
  */
 import type { ModelInput, ModelOutput } from '../valuation/model.ts'
+import { rankLevers } from '../valuation/scenario.ts'
 
 /** The slice of a saved dataset the digest needs. */
 export interface DigestDataset {
@@ -130,6 +131,11 @@ export function describeDataset(ds: DigestDataset, isActive: boolean): string {
     if (L.cash) {
       out.push(`- Cash safety: cash covers ${L.cash.monthsOfCash.toFixed(1)} months of spending (target ${money(L.cash.reserveTargetAmount)}). Chance cash runs out in the next year ${pct(L.cash.probShortfall, 0)}; chance it dips below the reserve ${pct(L.cash.probBelowReserve, 0)}.`)
     }
+    const levers = rankLevers(output, output.tools.costs)
+    if (levers.length) {
+      out.push('Biggest levers (the effect of a 10% move in each thing on its own, best first):')
+      for (const lv of levers) out.push(`- ${lv.label}: ${lv.deltaProfit >= 0 ? '+' : ''}${money(lv.deltaProfit)} profit a year${lv.deltaValue !== null ? `, ${lv.deltaValue >= 0 ? '+' : ''}${money(lv.deltaValue)} business value` : ''}.`)
+    }
     for (const w of L.warnings) out.push(`- Warning shown to the user: ${w}`)
     const p = input.local
     out.push(`Details the user entered: owner pay ${money(p.ownerPay)}, depreciation ${money(p.depreciation)}, interest ${money(p.interest)}, other add-backs ${money(p.otherAddBacks)}, net debt ${money(p.netDebt)}${p.cashOnHand !== undefined ? `, cash on hand ${money(p.cashOnHand)}` : ''}, business type preset "${p.preset}", value multiples ${p.multipleLow}x / ${p.multipleMid}x / ${p.multipleHigh}x of SDE.`)
@@ -176,7 +182,8 @@ Pages (left sidebar):
 - Overview: headline numbers and a chart of the user's months followed by the model's next months.
 - Forecasts: the forecast chart with a range, and a scenario explorer.
 - Financial model: the main workspace. Step 1 "Your months" (upload spreadsheet or edit the table), step 2 a few quick questions (owner pay, debt, cash, etc.), step 3 "See your forecast". Results are in tabs: Overview (forecast and value), What if (sliders for price, volume and cost, plus a ranking of the biggest levers), Break-even (fixed vs variable costs and how much to sell), Cash safety (how long cash lasts, chance of running short), Alerts (unusual months), Customers (lifetime value against cost to win a customer), Details (how it was worked out). Non-profits get Overview, What if, Alerts and Details, showing cash runway, funding mix and grant pipeline instead of business value.
-- Opportunities: ranked growth ideas (sample content in the early preview).
+- Opportunities: "Where a change would help most" (a 10% move in each lever, ranked by what it does to profit and value, from the user's own figures), an AI growth plan the user can generate (4 to 6 ranked, specific opportunities, each with evidence from their numbers, expected impact, effort and a first step), and plain-English takeaways.
+- Explain this: small buttons beside the main numbers on each page open this assistant with a question already asked.
 - Your data: the user's uploaded spreadsheets; they can have several and switch between them.
 - Model: how the Ascend forecaster works.
 

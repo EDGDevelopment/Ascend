@@ -35,6 +35,7 @@ export default function OverviewPage() {
           className="xl:col-span-2"
           title={`${metricLabels[shown]} forecast`}
           subtitle={`${formatUsd(end.forecast ?? 0)} projected by ${end.month} (${formatUsd(end.low ?? 0)} to ${formatUsd(end.high ?? 0)}). From your own figures, ${formatPercent(data.modelDriver.growth * 100)} expected revenue growth over 12 months.`}
+          explain={`Explain my ${metricLabels[shown].toLowerCase()} forecast, what the range means, and how far to trust it.`}
           action={<MetricTabs value={shown} onChange={setMetric} available={data.metrics} />}
         >
           <ForecastChart points={points} />

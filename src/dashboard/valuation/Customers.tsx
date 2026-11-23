@@ -26,7 +26,7 @@ export function Customers() {
         {f('marketingPerMonth', 'Spent on winning customers a month', 'num', 'Ads, promotions, referral rewards.')}
         {f('newCustomersPerMonth', 'New customers a month', 'num', 'People who bought from you for the first time.')}
       </div>
-      <Stage title="Is winning customers worth it?" subtitle="Lifetime value against the cost of winning someone new.">
+      <Stage title="Is winning customers worth it?" subtitle="Lifetime value against the cost of winning someone new." explain="Explain what customer lifetime value means and whether winning new customers is worth it for me.">
         <ColoredStats
           stats={[
             { label: 'A customer is worth', value: short(r.lifetimeValue), color: OUTCOME.best, note: 'profit over their time with you' },

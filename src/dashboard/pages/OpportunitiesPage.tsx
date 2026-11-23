@@ -1,5 +1,6 @@
 import { rankLevers } from '@/valuation/engine'
 import { useValuation } from '@/valuation/useValuation'
+import { AiOpportunities } from '../components/AiOpportunities'
 import { Card } from '../components/Card'
 import { NeedsData } from '../components/NeedsData'
 import { Insights } from '../valuation/Insights'
@@ -13,8 +14,9 @@ export default function OpportunitiesPage() {
 
   return (
     <div className="mx-auto max-w-[960px] space-y-6">
+      <AiOpportunities />
       {output.local && (
-        <Card title="Where a change would help most" subtitle="Each row tries a 10% change to one thing and shows what it would do, using your own figures.">
+        <Card title="Where a change would help most" subtitle="Each row tries a 10% change to one thing and shows what it would do, using your own figures." explain="Explain this ranking of changes: why is the top one first, and which should I try first in practice?">
           <ol className="divide-y divide-line-soft">
             {levers.map((l, i) => (
               <li key={l.id} className="flex flex-wrap items-center justify-between gap-3 py-3.5">

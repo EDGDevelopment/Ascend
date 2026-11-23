@@ -32,7 +32,7 @@ export function LocalHero({ output }: { output: ModelOutput }) {
   const span = Math.max(1, L.range.high - L.range.low)
   const at = Math.min(96, Math.max(4, ((L.range.mid - L.range.low) / span) * 100))
   return (
-    <Stage title="What your business is worth" subtitle="A range, because nobody can pin a sale price down to the dollar.">
+    <Stage title="What your business is worth" subtitle="A range, because nobody can pin a sale price down to the dollar." explain="Explain my business value range in plain English: how was it worked out from my numbers, and why is it a range?">
       <p className="ramp-text tabular text-5xl font-semibold tracking-tight sm:text-6xl">{short(L.range.mid)}</p>
       <p className="mt-1 text-sm text-ink-muted">most likely, before any money you owe</p>
 
@@ -71,7 +71,7 @@ export function NonprofitHero({ output }: { output: ModelOutput }) {
   const scale = Math.max(6, target * 1.5, months * 1.1)
   const pos = (m: number) => Math.min(98, Math.max(2, (m / scale) * 100))
   return (
-    <Stage title="How long your money lasts" subtitle="Cash in the bank against what you spend in a typical month.">
+    <Stage title="How long your money lasts" subtitle="Cash in the bank against what you spend in a typical month." explain="Explain how many months of cash we have, whether that is healthy for us, and what the chance of running dry means.">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
         <p className="ramp-text tabular text-5xl font-semibold tracking-tight sm:text-6xl">{months >= 24 ? '24+' : months.toFixed(1)} <span className="text-2xl sm:text-3xl">months</span></p>
         <span className="rounded-full border px-3 py-1 text-sm font-semibold" style={{ borderColor: level.color, color: level.color }}>{level.label}</span>

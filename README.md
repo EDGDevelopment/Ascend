@@ -56,7 +56,8 @@ src/
   data/        Types and mock data behind useDashboardData
   lib/         Env, Supabase client, formatters
   pages/       Landing and auth screens
-supabase/      SQL migrations and the valuation Edge Function ([docs/guides/VALUATION.md](docs/guides/VALUATION.md))
+  chat/        Ask Ascend chatbot panel ([docs/guides/ASSISTANT.md](docs/guides/ASSISTANT.md))
+supabase/      SQL migrations, the valuation Edge Function ([docs/guides/VALUATION.md](docs/guides/VALUATION.md)) and the chat Edge Function
 training/      Training code for the Ascend Patch Forecaster (Python, optional)
 docs/          Guides, project deliverables, presentations and certificates (see docs/README.md)
 ```

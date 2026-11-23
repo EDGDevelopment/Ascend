@@ -12,6 +12,7 @@ import {
   X,
 } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
+import { ChatWidget } from '@/chat/ChatWidget'
 import { Logo } from '@/components/Logo'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
@@ -164,6 +165,7 @@ export default function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+      <ChatWidget />
     </div>
   )
 }

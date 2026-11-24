@@ -1,6 +1,4 @@
 import { useMemo, type ReactNode } from 'react'
-import { Printer } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
 import { monthLabel } from '@/data/useDashboardData'
 import { formatUsd } from '@/lib/format'
 import { useValuation } from '@/valuation/useValuation'
@@ -99,12 +97,6 @@ export default function FundingPage() {
 
   return (
     <div className="mx-auto max-w-[820px] space-y-4">
-      <div className="flex justify-end print:hidden">
-        <Button variant="secondary" size="sm" onClick={() => window.print()}>
-          <Printer size={15} aria-hidden="true" /> Print or save as PDF
-        </Button>
-      </div>
-
       <article className="relative space-y-6 overflow-hidden rounded-card border border-line bg-surface p-6 pt-8 sm:p-9 sm:pt-11 print:overflow-visible print:border-0 print:p-0">
         <span aria-hidden="true" className="ramp-bg absolute inset-x-0 top-0 h-1.5 print:hidden" />
         <header>

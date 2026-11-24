@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/theme/ThemeProvider'
 import { ValuationProvider } from '@/valuation/ValuationProvider'
 import { FullPageLoader, ProtectedRoute } from '@/auth/ProtectedRoute'
 import { SectionTabs, type SectionTab } from '@/dashboard/components/SectionTabs'
+import { ReportActions } from '@/dashboard/components/ReportActions'
 import AuthPage from '@/pages/auth/AuthPage'
 import LandingPage from '@/pages/landing/LandingPage'
 const DashboardLayout = lazy(() => import('@/dashboard/DashboardLayout'))
@@ -56,7 +57,7 @@ export default function App() {
                 <Route index element={<OpportunitiesPage />} />
                 <Route path="goals" element={<GoalsPage />} />
               </Route>
-              <Route path="reports" element={<SectionTabs label="Reports" tabs={REPORTS} />}>
+              <Route path="reports" element={<SectionTabs label="Reports" tabs={REPORTS} actions={<ReportActions />} />}>
                 <Route index element={<FundingPage />} />
                 <Route path="track-record" element={<TrackRecordPage />} />
                 <Route path="model" element={<ModelPage />} />

@@ -7,8 +7,6 @@ import {
   Calculator,
   LogOut,
   Menu,
-  Printer,
-  Share2,
   FileText,
   Sparkles,
   X,
@@ -17,7 +15,6 @@ import { useAuth } from '@/auth/useAuth'
 import { ChatWidget } from '@/chat/ChatWidget'
 import { Logo } from '@/components/Logo'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { ShareDialog } from '@/share/ShareDialog'
 
 const nav = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
@@ -111,7 +108,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 export default function DashboardLayout() {
   const location = useLocation()
   const [drawer, setDrawer] = useState(false)
-  const [sharing, setSharing] = useState(false)
   // A section's own pages (Growth > Goals) share the section's title.
   const path = location.pathname.replace(/\/$/, '')
   const title = titles[path] ?? titles[Object.keys(titles).find((k) => k !== '/dashboard' && path.startsWith(k + '/')) ?? ''] ?? 'Dashboard'
@@ -165,12 +161,6 @@ export default function DashboardLayout() {
           <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
           <span className="ml-auto hidden text-xs text-ink-faint print:block">Ascend · printed {new Date().toLocaleDateString()}</span>
           <span className="ml-auto rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted print:hidden">Early preview</span>
-          <button type="button" onClick={() => setSharing(true)} aria-label="Share a read-only link" title="Share a read-only link" className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-ink-muted hover:bg-sunken hover:text-ink print:hidden">
-            <Share2 size={16} aria-hidden="true" /> <span className="hidden sm:inline">Share</span>
-          </button>
-          <button type="button" onClick={() => window.print()} aria-label="Print or save as PDF" title="Print or save as PDF" className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-ink-muted hover:bg-sunken hover:text-ink print:hidden">
-            <Printer size={16} aria-hidden="true" /> <span className="hidden sm:inline">Print</span>
-          </button>
           <ThemeToggle className="print:hidden" />
         </header>
 
@@ -181,7 +171,6 @@ export default function DashboardLayout() {
       <div className="print:hidden">
         <ChatWidget />
       </div>
-      {sharing && <ShareDialog onClose={() => setSharing(false)} />}
     </div>
   )
 }

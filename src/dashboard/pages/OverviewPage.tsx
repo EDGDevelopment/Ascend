@@ -5,6 +5,7 @@ import type { MetricKey } from '@/data/types'
 import { formatPercent, formatUsd } from '@/lib/format'
 import { useValuation } from '@/valuation/useValuation'
 import { Card } from '../components/Card'
+import { ReportActions } from '../components/ReportActions'
 import { ForecastChart } from '../components/ForecastChart'
 import { KpiStrip } from '../components/KpiStrip'
 import { MetricTabs } from '../components/MetricTabs'
@@ -24,9 +25,12 @@ export default function OverviewPage() {
 
   return (
     <div className="mx-auto max-w-[1280px] space-y-6">
-      <h2 className="text-xl font-semibold tracking-tight">
-        {data.name} <span className="font-normal text-ink-faint">· up to {data.asOf}</span>
-      </h2>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold tracking-tight">
+          {data.name} <span className="font-normal text-ink-faint">· up to {data.asOf}</span>
+        </h2>
+        <ReportActions />
+      </div>
 
       <KpiStrip kpis={data.kpis} next12={data.next12.mid} growth={data.modelDriver.growth} />
 

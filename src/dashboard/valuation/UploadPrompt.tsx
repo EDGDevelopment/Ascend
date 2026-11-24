@@ -12,7 +12,7 @@ const TYPES: { id: OrgType; label: string; blurb: string }[] = [
 /** The first thing a new client sees: pick the kind of organisation and upload a spreadsheet. Nothing else shows until they do. */
 export function UploadPrompt({ title = 'Upload your data to get started', hint = 'Ascend only shows figures from your own spreadsheet. Add your monthly revenue (and spending, if you have it) and your forecast appears in a few seconds.' }: { title?: string; hint?: string }) {
   const [orgType, setOrgType] = useState<OrgType>('local')
-  const { upload, message, busy } = useUpload()
+  const { upload, message, busy, review } = useUpload()
 
   return (
     <div className="mx-auto max-w-[720px] space-y-6 py-4">
@@ -39,7 +39,7 @@ export function UploadPrompt({ title = 'Upload your data to get started', hint =
           )
         })}
       </div>
-      <UploadCard onFile={(f) => void upload(f, orgType)} onTemplate={() => void downloadTemplate(orgType)} message={message} busy={busy} />
+      <UploadCard onFile={(f) => void upload(f, orgType)} onTemplate={() => void downloadTemplate(orgType)} message={message} busy={busy} review={review} />
       <p className="text-xs text-ink-faint">At least 12 months in a row; two years or more gives much better forecasts. Non-profits need spending for every month.</p>
     </div>
   )

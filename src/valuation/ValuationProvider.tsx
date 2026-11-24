@@ -3,7 +3,9 @@ import { useAuth } from '@/auth/useAuth'
 import { blankInput } from './defaults'
 import { deleteRemoteDataset, loadLibrary, loadRemoteDatasets, mergeDatasets, saveLibrary, saveRemoteDataset, type Dataset } from './datasets'
 import type { ModelInput } from './engine'
-import { computeModel, type ComputeSource } from './service'
+import { newGoal, type GoalStatus } from '../../supabase/functions/_shared/valuation/goals'
+import { addSnapshot, snapshotFrom } from '../../supabase/functions/_shared/valuation/track'
+import { computeModel,type ComputeSource } from './service'
 import { ValuationContext } from './ValuationContext'
 
 const now = () => new Date().toISOString()
@@ -83,9 +85,11 @@ export function ValuationProvider({ children }: { children: ReactNode }) {
       try {
         const res = await computeModel(ds.input)
         const updatedAt = now()
-        patch(ds.id, (d) => ({ ...d, output: res.output, updatedAt }))
+        const snap = snapshotFrom(res.output)
+        const snapshots = snap ? addSnapshot(ds.snapshots ?? [], snap) : (ds.snapshots ?? [])
+        patch(ds.id, (d) => ({ ...d, output: res.output, snapshots, updatedAt }))
         setSource(res.source)
-        if (userId) setSaveWarning(await saveRemoteDataset(userId, { ...ds, output: res.output, updatedAt }))
+        if (userId) setSaveWarning(await saveRemoteDataset(userId, { ...ds, output: res.output, snapshots, updatedAt }))
       } catch (e) {
         setError(e instanceof Error ? e.message : 'The forecast could not be worked out.')
       } finally {
@@ -110,6 +114,21 @@ export function ValuationProvider({ children }: { children: ReactNode }) {
       await execute(ds)
     },
     [execute],
+  )
+
+  const updateDataset = useCallback(
+    async (id: string, change: { fileName: string | null; monthly: ModelInput['monthly'] }) => {
+      const target = datasets.find((d) => d.id === id)
+      if (!target) return
+      // Details the owner has already set (pay, debts, cash and so on) are kept. Only the months change.
+      const ds: Dataset = { ...target, fileName: change.fileName ?? target.fileName, input: { ...target.input, monthly: change.monthly }, updatedAt: now() }
+      patch(id, () => ds)
+      setActiveId(id)
+      setLoadId((n) => n + 1)
+      setSaveWarning(null)
+      await execute(ds)
+    },
+    [datasets, patch, execute],
   )
 
   const selectDataset = useCallback((id: string) => {
@@ -143,9 +162,32 @@ export function ValuationProvider({ children }: { children: ReactNode }) {
     [datasets, userId],
   )
 
+  /** Changes the open dataset's goals and saves the result. */
+  const changeGoals = useCallback(
+    (change: (goals: NonNullable<Dataset['goals']>) => NonNullable<Dataset['goals']>) => {
+      if (!active) return
+      const next = { ...active, goals: change(active.goals ?? []), updatedAt: now() }
+      patch(active.id, () => next)
+      if (userId) void saveRemoteDataset(userId, next).then(setSaveWarning)
+    },
+    [active, patch, userId],
+  )
+
+  const addGoal = useCallback(
+    (g: { title: string; note?: string; source: 'plan' | 'custom'; targetPct?: number | null }) => {
+      const goal = active?.output ? newGoal(active.output, { ...g, id: newId(), now: now() }) : null
+      if (!goal) return false
+      changeGoals((list) => [goal, ...list])
+      return true
+    },
+    [active, changeGoals],
+  )
+  const setGoalStatus = useCallback((id: string, status: GoalStatus) => changeGoals((list) => list.map((x) => (x.id === id ? { ...x, status } : x))), [changeGoals])
+  const removeGoal = useCallback((id: string) => changeGoals((list) => list.filter((x) => x.id !== id)), [changeGoals])
+
   const value = useMemo(
-    () => ({ ready, datasets, active, input, output, source, running, error, saveWarning, loadId, setInput, replaceInput, run, addDataset, selectDataset, renameDataset, deleteDataset }),
-    [ready, datasets, active, input, output, source, running, error, saveWarning, loadId, setInput, replaceInput, run, addDataset, selectDataset, renameDataset, deleteDataset],
+    () => ({ ready, datasets, active, input, output, source, running, error, saveWarning, loadId, setInput, replaceInput, run, addDataset, updateDataset, selectDataset, renameDataset, deleteDataset, addGoal, setGoalStatus, removeGoal }),
+    [ready, datasets, active, input, output, source, running, error, saveWarning, loadId, setInput, replaceInput, run, addDataset, updateDataset, selectDataset, renameDataset, deleteDataset, addGoal, setGoalStatus, removeGoal],
   )
   return <ValuationContext.Provider value={value}>{children}</ValuationContext.Provider>
 }

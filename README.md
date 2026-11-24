@@ -64,13 +64,17 @@ To try it, upload one of the files in [`data/sample-data/`](data/sample-data/REA
 | `/dashboard/valuation` | Signed in | Financial model: upload, forecast, value or cash runway, and the toolkit (What if, Break-even, Cash safety, Alerts, Customers, Details) |
 | `/dashboard/opportunities` | Signed in | AI growth plan, ranked levers and plain-English takeaways |
 | `/dashboard/data` | Signed in | Your spreadsheets: add, switch, rename, delete |
+| `/dashboard/track-record` | Signed in | Past forecasts scored against the real months that followed |
+| `/dashboard/goals` | Signed in | Changes you are tracking, compared with the forecast made before them |
+| `/dashboard/funding` | Signed in | One-page financial snapshot for lenders and grant-makers (print or save as PDF) |
 | `/dashboard/model` | Signed in | How your forecast was made and how well the method works |
+| `/shared/:token` | Public link | Read-only copy of a report, made with the **Share** button |
 
 The **Ask Ascend** button, bottom right of every dashboard page, opens the assistant. Chat history is kept in the browser, per user.
 
 ## Supabase
 
-Run the migrations in `supabase/migrations/` (`profiles`, then `valuation_datasets`; `0002` is superseded by `0003`). Then deploy the functions:
+Run the migrations in `supabase/migrations/` (`profiles`, then `valuation_datasets`; `0002` is superseded by `0003`; `0004` adds forecast snapshots and goals; `0005` adds share links). Then deploy the functions:
 
 | Function | Purpose | Secrets |
 | --- | --- | --- |

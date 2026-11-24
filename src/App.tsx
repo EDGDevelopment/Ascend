@@ -12,6 +12,10 @@ const ForecastsPage = lazy(() => import('@/dashboard/pages/ForecastsPage'))
 const OpportunitiesPage = lazy(() => import('@/dashboard/pages/OpportunitiesPage'))
 const DataSourcesPage = lazy(() => import('@/dashboard/pages/DataSourcesPage'))
 const ModelPage = lazy(() => import('@/dashboard/pages/ModelPage'))
+const TrackRecordPage = lazy(() => import('@/dashboard/pages/TrackRecordPage'))
+const SharedReportPage = lazy(() => import('@/dashboard/pages/SharedReportPage'))
+const GoalsPage = lazy(() => import('@/dashboard/pages/GoalsPage'))
+const FundingPage = lazy(() => import('@/dashboard/pages/FundingPage'))
 const ValuationPage = lazy(() => import('@/dashboard/pages/ValuationPage'))
 
 export default function App() {
@@ -28,6 +32,8 @@ export default function App() {
           <Route path="/forgot-password" element={<AuthPage mode="forgot" />} />
           <Route path="/reset-password" element={<AuthPage mode="reset" />} />
 
+          <Route path="/shared/:token" element={<SharedReportPage />} />
+
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<OverviewPage />} />
@@ -36,6 +42,9 @@ export default function App() {
               <Route path="opportunities" element={<OpportunitiesPage />} />
               <Route path="data" element={<DataSourcesPage />} />
               <Route path="model" element={<ModelPage />} />
+              <Route path="track-record" element={<TrackRecordPage />} />
+              <Route path="goals" element={<GoalsPage />} />
+              <Route path="funding" element={<FundingPage />} />
             </Route>
           </Route>
 

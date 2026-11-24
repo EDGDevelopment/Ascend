@@ -8,13 +8,19 @@ import {
   LogOut,
   Menu,
   Network,
+  Printer,
+  Share2,
+  Flag,
+  Landmark,
   Sparkles,
+  Target,
   X,
 } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
 import { ChatWidget } from '@/chat/ChatWidget'
 import { Logo } from '@/components/Logo'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { ShareDialog } from '@/share/ShareDialog'
 
 const nav = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
@@ -22,6 +28,9 @@ const nav = [
   { to: '/dashboard/valuation', label: 'Financial model', icon: Calculator },
   { to: '/dashboard/opportunities', label: 'Opportunities', icon: Sparkles },
   { to: '/dashboard/data', label: 'Your data', icon: Database },
+  { to: '/dashboard/track-record', label: 'Track record', icon: Target },
+  { to: '/dashboard/goals', label: 'Goals', icon: Flag },
+  { to: '/dashboard/funding', label: 'Funding readiness', icon: Landmark },
   { to: '/dashboard/model', label: 'Model', icon: Network },
 ]
 
@@ -31,6 +40,9 @@ const titles: Record<string, string> = {
   '/dashboard/valuation': 'Financial model',
   '/dashboard/opportunities': 'Opportunities',
   '/dashboard/data': 'Your data',
+  '/dashboard/track-record': 'Track record',
+  '/dashboard/goals': 'Goals',
+  '/dashboard/funding': 'Funding readiness',
   '/dashboard/model': 'Model',
 }
 
@@ -108,6 +120,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 export default function DashboardLayout() {
   const location = useLocation()
   const [drawer, setDrawer] = useState(false)
+  const [sharing, setSharing] = useState(false)
   const title = titles[location.pathname.replace(/\/$/, '')] ?? 'Dashboard'
 
   // Close the mobile drawer on Escape. Link clicks close it through onNavigate.
@@ -119,8 +132,8 @@ export default function DashboardLayout() {
   }, [drawer])
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[250px_minmax(0,1fr)]">
-      <aside className="sticky top-0 hidden h-screen border-r border-line-soft bg-surface lg:block">
+    <div className="min-h-screen lg:grid lg:grid-cols-[250px_minmax(0,1fr)] print:block">
+      <aside className="sticky top-0 hidden h-screen border-r border-line-soft bg-surface lg:block print:hidden">
         <SidebarContent />
       </aside>
 
@@ -147,7 +160,7 @@ export default function DashboardLayout() {
       )}
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line-soft bg-page px-4 sm:px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line-soft bg-page px-4 sm:px-8 print:static print:h-auto print:border-0 print:px-0 print:pb-2">
           <button
             type="button"
             className="grid h-10 w-10 place-items-center rounded-lg text-ink hover:bg-sunken lg:hidden"
@@ -157,15 +170,24 @@ export default function DashboardLayout() {
             <Menu size={20} />
           </button>
           <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
-          <span className="ml-auto rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted">Early preview</span>
-          <ThemeToggle />
+          <span className="ml-auto rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted print:hidden">Early preview</span>
+          <button type="button" onClick={() => setSharing(true)} aria-label="Share a read-only link" title="Share a read-only link" className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-ink-muted hover:bg-sunken hover:text-ink print:hidden">
+            <Share2 size={16} aria-hidden="true" /> <span className="hidden sm:inline">Share</span>
+          </button>
+          <button type="button" onClick={() => window.print()} aria-label="Print or save as PDF" title="Print or save as PDF" className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-ink-muted hover:bg-sunken hover:text-ink print:hidden">
+            <Printer size={16} aria-hidden="true" /> <span className="hidden sm:inline">Print</span>
+          </button>
+          <ThemeToggle className="print:hidden" />
         </header>
 
-        <main className="px-4 py-6 sm:px-8 sm:py-8">
+        <main className="px-4 py-6 sm:px-8 sm:py-8 print:p-0">
           <Outlet />
         </main>
       </div>
-      <ChatWidget />
+      <div className="print:hidden">
+        <ChatWidget />
+      </div>
+      {sharing && <ShareDialog onClose={() => setSharing(false)} />}
     </div>
   )
 }

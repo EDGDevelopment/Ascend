@@ -18,17 +18,17 @@ export default function ModelPage() {
   const f = output.forecast
   const d = data.modelDriver
   const rows: [string, string][] = [
-    ['Months of your data', String(output.input.monthly.length)],
+    ['Months of data', String(output.input.monthly.length)],
     ['Method', d.method],
     ['Simulated futures', output.input.simulations.toLocaleString()],
-    ['Worked out', `${new Date(d.computedAt).toLocaleString()}${source ? `, ${source === 'server' ? 'on the server' : 'in your browser'}` : ''}`],
-    ['Tested on your last months', d.backtestError === null ? 'Not enough history to test' : `typically ${(d.backtestError * 100).toFixed(1)}% off each month`],
+    ['Worked out', `${new Date(d.computedAt).toLocaleString()}${source ? `, ${source === 'server' ? 'on the server' : 'in the browser'}` : ''}`],
+    ['Tested on the most recent months', d.backtestError === null ? 'Not enough history to test' : `typically ${(d.backtestError * 100).toFixed(1)}% off each month`],
     ['Ascend Patch Forecaster', f.usedPatch ? 'Used' : 'Not used for this run'],
   ]
 
   return (
     <div className="mx-auto max-w-[900px] space-y-6">
-      <Card title="How your forecast was made" subtitle="Everything here comes from the spreadsheet you uploaded.">
+      <Card title="How the forecast was made" subtitle="Everything here comes from the uploaded spreadsheet.">
         <dl className="divide-y divide-line-soft">
           {rows.map(([k, v]) => (
             <div key={k} className="grid gap-1 py-3 sm:grid-cols-[220px_1fr]">
@@ -59,7 +59,7 @@ export default function ModelPage() {
           </tbody>
         </table>
         <p className="mt-3 text-xs text-ink-faint">
-          These are national totals for whole retail categories, which are smoother than one business. Your own number above is the one to trust. Ranges are meant to hold the truth about 8 times in 10.
+          These are national totals for whole retail categories, which are smoother than one business. The figure for this organisation above is the one to trust. Ranges are meant to hold the truth about 8 times in 10.
         </p>
       </Card>
     </div>

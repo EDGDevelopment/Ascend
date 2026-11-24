@@ -96,7 +96,7 @@ export default function FundingPage() {
   const f = output.forecast
 
   return (
-    <div className="mx-auto max-w-[820px] space-y-4">
+    <div className="space-y-4">
       <article className="relative space-y-6 overflow-hidden rounded-card border border-line bg-surface p-6 pt-8 sm:p-9 sm:pt-11 print:overflow-visible print:border-0 print:p-0">
         <span aria-hidden="true" className="ramp-bg absolute inset-x-0 top-0 h-1.5 print:hidden" />
         <header>

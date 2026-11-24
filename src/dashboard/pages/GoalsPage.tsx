@@ -52,7 +52,7 @@ function GoalCard({ goal, monthly }: { goal: Goal; monthly: { month: string; rev
       {goal.note && <p className="mt-2 text-sm text-ink-muted">{goal.note}</p>}
 
       {r.months === 0 ? (
-        <p className="mt-3 rounded-lg bg-sunken px-3 py-2.5 text-sm text-ink-muted">No real months since the start yet. Add each new month, or upload your updated file, and this fills in.</p>
+        <p className="mt-3 rounded-lg bg-sunken px-3 py-2.5 text-sm text-ink-muted">No real months since the start yet.{!readOnly && ' Add each new month, or upload an updated file, and this fills in.'}</p>
       ) : (
         <>
           <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 rounded-lg bg-sunken px-4 py-3 sm:grid-cols-4">
@@ -124,11 +124,11 @@ export default function GoalsPage() {
         </Card>
       )}
 
-      <Card title="Your goals" subtitle="Real revenue since each goal started, against what the forecast expected if nothing changed.">
+      <Card title="Goals" subtitle="Real revenue since each goal started, against what the forecast expected if nothing changed.">
         {goals.length === 0 ? (
           <div className="rounded-lg border border-dashed border-line px-4 py-8 text-center">
             <p className="text-[15px] font-medium">No goals yet</p>
-            <p className="mx-auto mt-1 max-w-[44ch] text-sm text-ink-muted">Add a change above, or track a move from your growth plan. Ascend will show whether results move away from the forecast afterwards.</p>
+            {!readOnly && <p className="mx-auto mt-1 max-w-[44ch] text-sm text-ink-muted">Add a change above, or track a move from the growth plan. Ascend will show whether results move away from the forecast afterwards.</p>}
           </div>
         ) : (
           <ul className="divide-y divide-line-soft">
@@ -138,7 +138,7 @@ export default function GoalsPage() {
           </ul>
         )}
         <p className="mt-5 text-xs text-ink-faint">
-          This shows whether results moved away from the forecast after you made the change. It cannot prove the change caused it: prices, weather, staff and the economy all move too.
+          This shows whether results moved away from the forecast after the change was made. It cannot prove the change caused it: prices, weather, staff and the economy all move too.
         </p>
       </Card>
     </div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { monthLabel } from '@/data/useDashboardData'
 import { formatUsd } from '@/lib/format'
 import { useValuation } from '@/valuation/useValuation'
+import { useReadOnly } from '../readOnly'
 import { EXPECTED_IN_RANGE, scoreTrackRecord } from '../../../supabase/functions/_shared/valuation/track'
 import { Card } from '../components/Card'
 import { NeedsData } from '../components/NeedsData'
@@ -22,6 +23,7 @@ function Stat({ label, value, note }: { label: string; value: string; note: stri
 
 export default function TrackRecordPage() {
   const { active, output } = useValuation()
+  const readOnly = useReadOnly()
   const record = useMemo(() => (active ? scoreTrackRecord(active.snapshots ?? [], active.input.monthly) : null), [active])
   if (!active || !output || !record) return <NeedsData />
 
@@ -38,11 +40,13 @@ export default function TrackRecordPage() {
         {record.scored === 0 ? (
           <div className="space-y-3 text-[15px] text-ink-muted">
             <p>
-              Nothing to check yet. {latest ? `Your latest forecast looks ahead from ${monthLabel(latest.lastMonth)}, to ${monthLabel(latest.months[latest.months.length - 1])}.` : 'Your forecast has not been saved yet.'}
+              Nothing to check yet. {latest ? `The latest forecast looks ahead from ${monthLabel(latest.lastMonth)}, to ${monthLabel(latest.months[latest.months.length - 1])}.` : 'No forecast has been saved yet.'}
             </p>
-            <p>
-              To fill this page, add each new month of results on the <Link to="/dashboard/valuation" className="font-medium text-accent-ink hover:underline">Financial model</Link> page and run the forecast again. The new month is scored against the forecast you had before.
-            </p>
+            {!readOnly && (
+              <p>
+                To fill this page, add each new month of results on the <Link to="/dashboard/valuation" className="font-medium text-accent-ink hover:underline">Financial model</Link> page, or upload an updated file, and run the forecast again. Each new month is scored against the forecast made before it.
+              </p>
+            )}
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-3">

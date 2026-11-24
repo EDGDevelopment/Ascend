@@ -5,6 +5,7 @@ import type { MetricKey } from '@/data/types'
 import { formatPercent, formatUsd } from '@/lib/format'
 import { useValuation } from '@/valuation/useValuation'
 import { Card } from '../components/Card'
+import { ReportActions } from '../components/ReportActions'
 import { ForecastChart } from '../components/ForecastChart'
 import { KpiStrip } from '../components/KpiStrip'
 import { MetricTabs } from '../components/MetricTabs'
@@ -24,9 +25,12 @@ export default function OverviewPage() {
 
   return (
     <div className="mx-auto max-w-[1280px] space-y-6">
-      <h2 className="text-xl font-semibold tracking-tight">
-        {data.name} <span className="font-normal text-ink-faint">· up to {data.asOf}</span>
-      </h2>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold tracking-tight">
+          {data.name} <span className="font-normal text-ink-faint">· up to {data.asOf}</span>
+        </h2>
+        <ReportActions />
+      </div>
 
       <KpiStrip kpis={data.kpis} next12={data.next12.mid} growth={data.modelDriver.growth} />
 
@@ -34,7 +38,7 @@ export default function OverviewPage() {
         <Card
           className="xl:col-span-2"
           title={`${metricLabels[shown]} forecast`}
-          subtitle={`${formatUsd(end.forecast ?? 0)} projected by ${end.month} (${formatUsd(end.low ?? 0)} to ${formatUsd(end.high ?? 0)}). From your own figures, ${formatPercent(data.modelDriver.growth * 100)} expected revenue growth over 12 months.`}
+          subtitle={`${formatUsd(end.forecast ?? 0)} projected by ${end.month} (${formatUsd(end.low ?? 0)} to ${formatUsd(end.high ?? 0)}). From the figures supplied, ${formatPercent(data.modelDriver.growth * 100)} expected revenue growth over 12 months.`}
           explain={`Explain my ${metricLabels[shown].toLowerCase()} forecast, what the range means, and how far to trust it.`}
           action={<MetricTabs value={shown} onChange={setMetric} available={data.metrics} />}
         >

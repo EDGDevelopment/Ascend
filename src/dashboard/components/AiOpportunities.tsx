@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { MessageCircle, RefreshCw, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Check, MessageCircle, RefreshCw, Sparkles, Target } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
 import { askAscend } from '@/chat/chatBus'
 import { AiError } from '@/chat/functionClient'
@@ -18,12 +19,13 @@ const when = (iso: string) => new Date(iso).toLocaleDateString(undefined, { day:
 
 /** A ranked growth plan written by the AI from the open spreadsheet's own figures and results. */
 export function AiOpportunities() {
-  const { active, output } = useValuation()
+  const { active, output, addGoal } = useValuation()
   const { user } = useAuth()
   const userId = user?.id ?? null
   const datasetId = active?.id ?? null
 
   const [plan, setPlan] = useState<SavedPlan | null>(null)
+  const [tracked, setTracked] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   // Which user and spreadsheet the plan on screen belongs to, so switching spreadsheets swaps in the right one.
@@ -156,6 +158,21 @@ export function AiOpportunities() {
                       <MessageCircle size={14} aria-hidden="true" />
                       Ask about this
                     </button>
+                    {tracked.has(o.title) || (active?.goals ?? []).some((g) => g.title === o.title) ? (
+                      <Link to="/dashboard/growth/goals" className="ml-4 mt-3 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-muted hover:underline">
+                        <Check size={14} aria-hidden="true" />
+                        Tracking this goal
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => addGoal({ title: o.title, note: o.firstStep, source: 'plan' }) && setTracked((t) => new Set(t).add(o.title))}
+                        className="ml-4 mt-3 inline-flex items-center gap-1.5 text-[13px] font-medium text-accent-ink hover:underline"
+                      >
+                        <Target size={14} aria-hidden="true" />
+                        Track as a goal
+                      </button>
+                    )}
                   </div>
                 </div>
               </li>

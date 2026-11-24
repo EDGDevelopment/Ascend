@@ -77,7 +77,7 @@ function Row({ d, isActive }: { d: Dataset; isActive: boolean }) {
 
 export default function DataSourcesPage() {
   const { ready, datasets, active, saveWarning, error, input } = useValuation()
-  const { upload, message, busy } = useUpload()
+  const { upload, message, busy, review } = useUpload()
 
   if (!ready) return <NeedsData />
   if (datasets.length === 0) return <UploadPrompt hint="Your uploaded spreadsheets are listed here, where you can rename, switch between, download or delete them. Upload your first one to begin." />
@@ -85,7 +85,7 @@ export default function DataSourcesPage() {
   return (
     <div className="mx-auto max-w-[900px] space-y-6">
       <Card title="Add another spreadsheet" subtitle="It is added to your list and becomes the one the dashboards use.">
-        <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={message} busy={busy} />
+        <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={message} busy={busy} review={review} />
       </Card>
 
       {error && (

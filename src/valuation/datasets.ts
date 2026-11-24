@@ -1,5 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import type { ModelInput, ModelOutput } from './engine'
+import type { Goal } from '../../supabase/functions/_shared/valuation/goals'
+import type { ForecastSnapshot } from '../../supabase/functions/_shared/valuation/track'
 
 /** One uploaded spreadsheet with the details and result that go with it. */
 export interface Dataset {
@@ -11,6 +13,10 @@ export interface Dataset {
   updatedAt: string
   input: ModelInput
   output: ModelOutput | null
+  /** What each past forecast said, kept so it can be checked against real months later. Absent on older datasets. */
+  snapshots?: ForecastSnapshot[]
+  /** Changes the owner is tracking. Absent on older datasets. */
+  goals?: Goal[]
 }
 
 export interface Library {
@@ -47,29 +53,33 @@ export function saveLibrary(userId: string, lib: Library) {
 
 export async function loadRemoteDatasets(userId: string): Promise<Dataset[]> {
   if (!supabase) return []
-  const { data, error } = await supabase
-    .from('valuation_datasets')
-    .select('id, name, file_name, input, output, created_at, updated_at')
-    .eq('owner_id', userId)
-    .order('created_at', { ascending: false })
-  if (error || !data) return []
-  return data
-    .map((r) => ({ id: r.id, name: r.name, fileName: r.file_name, createdAt: r.created_at, updatedAt: r.updated_at, input: r.input, output: r.output ?? null }))
+  const query = (cols: string) => supabase!.from('valuation_datasets').select(cols).eq('owner_id', userId).order('created_at', { ascending: false })
+  let res = await query('id, name, file_name, input, output, snapshots, goals, created_at, updated_at')
+  // Migration 0004 adds the snapshots column. Until it is run, load without it rather than showing nothing.
+  if (res.error) res = await query('id, name, file_name, input, output, created_at, updated_at')
+  if (res.error || !res.data) return []
+  return (res.data as unknown as Record<string, any>[]) // eslint-disable-line @typescript-eslint/no-explicit-any
+    .map((r) => ({
+      id: r.id,
+      name: r.name,
+      fileName: r.file_name,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+      input: r.input,
+      output: r.output ?? null,
+      snapshots: Array.isArray(r.snapshots) ? r.snapshots : [],
+      goals: Array.isArray(r.goals) ? r.goals : [],
+    }))
     .filter(isDataset)
 }
 
 /** Returns an error message, or null on success. A missing table (migration not run) is reported, not thrown. */
 export async function saveRemoteDataset(userId: string, d: Dataset): Promise<string | null> {
   if (!supabase) return null
-  const { error } = await supabase.from('valuation_datasets').upsert({
-    id: d.id,
-    owner_id: userId,
-    name: d.name,
-    file_name: d.fileName,
-    input: d.input,
-    output: d.output,
-    updated_at: d.updatedAt,
-  })
+  const row = { id: d.id, owner_id: userId, name: d.name, file_name: d.fileName, input: d.input, output: d.output, updated_at: d.updatedAt }
+  let { error } = await supabase.from('valuation_datasets').upsert({ ...row, snapshots: d.snapshots ?? [], goals: d.goals ?? [] })
+  // Migration 0004 not run yet: save everything else so nothing is lost.
+  if (error && /snapshots|goals/i.test(error.message)) ({ error } = await supabase.from('valuation_datasets').upsert(row))
   return error ? error.message : null
 }
 

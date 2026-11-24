@@ -1,8 +1,11 @@
 import { Sparkles } from 'lucide-react'
+import { useReadOnly } from '@/dashboard/readOnly'
 import { askAscend } from './chatBus'
 
 /** A small "Explain this" button. Opens the assistant with the question already asked. */
 export function ExplainButton({ question, label = 'Explain this' }: { question: string; label?: string }) {
+  // Shared links have no assistant to ask.
+  if (useReadOnly()) return null
   return (
     <button
       type="button"

@@ -7,7 +7,7 @@ import {
   Calculator,
   LogOut,
   Menu,
-  Network,
+  FileText,
   Sparkles,
   X,
 } from 'lucide-react'
@@ -20,18 +20,18 @@ const nav = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/dashboard/forecasts', label: 'Forecasts', icon: LineChart },
   { to: '/dashboard/valuation', label: 'Financial model', icon: Calculator },
-  { to: '/dashboard/opportunities', label: 'Opportunities', icon: Sparkles },
+  { to: '/dashboard/growth', label: 'Growth', icon: Sparkles },
+  { to: '/dashboard/reports', label: 'Reports', icon: FileText },
   { to: '/dashboard/data', label: 'Your data', icon: Database },
-  { to: '/dashboard/model', label: 'Model', icon: Network },
 ]
 
 const titles: Record<string, string> = {
   '/dashboard': 'Overview',
   '/dashboard/forecasts': 'Forecasts',
   '/dashboard/valuation': 'Financial model',
-  '/dashboard/opportunities': 'Opportunities',
+  '/dashboard/growth': 'Growth',
+  '/dashboard/reports': 'Reports',
   '/dashboard/data': 'Your data',
-  '/dashboard/model': 'Model',
 }
 
 function initials(name: string) {
@@ -108,7 +108,9 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 export default function DashboardLayout() {
   const location = useLocation()
   const [drawer, setDrawer] = useState(false)
-  const title = titles[location.pathname.replace(/\/$/, '')] ?? 'Dashboard'
+  // A section's own pages (Growth > Goals) share the section's title.
+  const path = location.pathname.replace(/\/$/, '')
+  const title = titles[path] ?? titles[Object.keys(titles).find((k) => k !== '/dashboard' && path.startsWith(k + '/')) ?? ''] ?? 'Dashboard'
 
   // Close the mobile drawer on Escape. Link clicks close it through onNavigate.
   useEffect(() => {
@@ -119,8 +121,8 @@ export default function DashboardLayout() {
   }, [drawer])
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[250px_minmax(0,1fr)]">
-      <aside className="sticky top-0 hidden h-screen border-r border-line-soft bg-surface lg:block">
+    <div className="min-h-screen lg:grid lg:grid-cols-[250px_minmax(0,1fr)] print:block">
+      <aside className="sticky top-0 hidden h-screen border-r border-line-soft bg-surface lg:block print:hidden">
         <SidebarContent />
       </aside>
 
@@ -147,7 +149,7 @@ export default function DashboardLayout() {
       )}
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line-soft bg-page px-4 sm:px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line-soft bg-page px-4 sm:px-8 print:static print:h-auto print:border-0 print:px-0 print:pb-2">
           <button
             type="button"
             className="grid h-10 w-10 place-items-center rounded-lg text-ink hover:bg-sunken lg:hidden"
@@ -157,15 +159,18 @@ export default function DashboardLayout() {
             <Menu size={20} />
           </button>
           <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
-          <span className="ml-auto rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted">Early preview</span>
-          <ThemeToggle />
+          <span className="ml-auto hidden text-xs text-ink-faint print:block">Ascend · printed {new Date().toLocaleDateString()}</span>
+          <span className="ml-auto rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted print:hidden">Early preview</span>
+          <ThemeToggle className="print:hidden" />
         </header>
 
-        <main className="px-4 py-6 sm:px-8 sm:py-8">
+        <main className="px-4 py-6 sm:px-8 sm:py-8 print:p-0">
           <Outlet />
         </main>
       </div>
-      <ChatWidget />
+      <div className="print:hidden">
+        <ChatWidget />
+      </div>
     </div>
   )
 }

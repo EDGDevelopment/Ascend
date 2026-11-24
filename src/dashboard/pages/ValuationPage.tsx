@@ -66,7 +66,7 @@ function More({ title, hint, children }: { title: string; hint?: string; childre
 
 export default function ValuationPage() {
   const { ready, active, input, output, source, running, error, saveWarning, loadId, setInput, replaceInput, run } = useValuation()
-  const { upload, message: fileMessage, busy } = useUpload()
+  const { upload, message: fileMessage, busy, review } = useUpload()
   const [tab, setTab] = useState('overview')
 
   if (!ready) return <p role="status" className="py-10 text-center text-sm text-ink-muted">Loading your data...</p>
@@ -105,7 +105,7 @@ export default function ValuationPage() {
       </div>
 
       <Step n={1} title="Your months" hint="Revenue for each month, and spending if you have it. Uploading another spreadsheet adds it to your list and switches to it.">
-        <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={fileMessage} busy={busy} summary={summary} />
+        <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={fileMessage} busy={busy} summary={summary} review={review} />
         <p className="mt-2 text-sm text-ink-muted">
           Rename, switch or delete spreadsheets on the <Link to="/dashboard/data" className="font-medium text-accent-ink hover:underline">Your data</Link> page.
         </p>

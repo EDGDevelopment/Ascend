@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom'
 import { AlertTriangle, ChevronDown, Play } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
-import type { OrgType } from '@/valuation/engine'
+import type { ModelOutput, OrgType } from '@/valuation/engine'
 import { downloadTemplate } from '@/valuation/spreadsheet'
 import { useUpload } from '@/valuation/useUpload'
 import { useValuation } from '@/valuation/useValuation'
 import { monthLabel } from '@/data/useDashboardData'
-import { Card } from '../components/Card'
 import { Alerts } from '../valuation/Alerts'
 import { BreakEven } from '../valuation/BreakEven'
 import { CashSafety } from '../valuation/CashSafety'
@@ -19,10 +18,10 @@ import { ForecastNotes, ForecastStage } from '../valuation/ForecastPanel'
 import { LocalHero, NonprofitHero } from '../valuation/Hero'
 import { Insights } from '../valuation/Insights'
 import { LocalMore, LocalQuestions } from '../valuation/LocalInputs'
-import { LocalDetails } from '../valuation/LocalResults'
+import { LocalMethods, LocalOutcomes, LocalTables } from '../valuation/LocalResults'
 import { MonthlyTable } from '../valuation/MonthlyTable'
 import { NonprofitMore, NonprofitQuestions } from '../valuation/NonprofitInputs'
-import { NonprofitCashStage, NonprofitDetails } from '../valuation/NonprofitResults'
+import { NonprofitCashStage, NonprofitChecks, NonprofitFunding } from '../valuation/NonprofitResults'
 import { Step } from '../valuation/Step'
 import { UploadCard } from '../valuation/UploadCard'
 import { UploadPrompt } from '../valuation/UploadPrompt'
@@ -33,20 +32,53 @@ const TYPES: { id: OrgType; label: string; blurb: string }[] = [
 ]
 
 const LOCAL_TABS: TabDef[] = [
-  { id: 'overview', label: 'Overview', hint: 'Forecast and value' },
-  { id: 'whatif', label: 'What if', hint: 'Try a change' },
-  { id: 'breakeven', label: 'Break-even', hint: 'How much to sell' },
-  { id: 'cash', label: 'Cash safety', hint: 'Will cash last?' },
-  { id: 'alerts', label: 'Alerts', hint: 'Unusual months' },
-  { id: 'customers', label: 'Customers', hint: 'Worth winning?' },
-  { id: 'details', label: 'Details', hint: 'How it was worked out' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'whatif', label: 'What if' },
+  { id: 'breakeven', label: 'Break-even' },
+  { id: 'cash', label: 'Cash safety' },
+  { id: 'alerts', label: 'Alerts' },
+  { id: 'customers', label: 'Customers' },
+  { id: 'details', label: 'Details' },
 ]
 const NONPROFIT_TABS: TabDef[] = [
-  { id: 'overview', label: 'Overview', hint: 'Money and forecast' },
-  { id: 'whatif', label: 'What if', hint: 'Try a change' },
-  { id: 'alerts', label: 'Alerts', hint: 'Unusual months' },
-  { id: 'details', label: 'Details', hint: 'How it was worked out' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'whatif', label: 'What if' },
+  { id: 'alerts', label: 'Alerts' },
+  { id: 'details', label: 'Details' },
 ]
+
+const LOCAL_DETAIL_TABS: TabDef[] = [
+  { id: 'methods', label: 'Valuation methods' },
+  { id: 'outcomes', label: 'Range of outcomes' },
+  { id: 'tables', label: 'Tables' },
+  { id: 'how', label: 'How it was made' },
+]
+const NONPROFIT_DETAIL_TABS: TabDef[] = [
+  { id: 'checks', label: 'Finance checks' },
+  { id: 'funding', label: 'Funding and result' },
+  { id: 'forecast', label: 'Income and spending' },
+  { id: 'how', label: 'How it was made' },
+]
+
+function DetailsPanel({ output }: { output: ModelOutput }) {
+  const local = output.input.orgType === 'local'
+  const tabs = local ? LOCAL_DETAIL_TABS : NONPROFIT_DETAIL_TABS
+  const [sub, setSub] = useState(tabs[0].id)
+  const shown = tabs.some((t) => t.id === sub) ? sub : tabs[0].id
+  return (
+    <div className="rounded-card border border-line bg-surface p-5">
+      <Tabs tabs={tabs} active={shown} onChange={setSub} label="Details sections" variant="line">
+        {shown === 'methods' && <LocalMethods output={output} />}
+        {shown === 'outcomes' && <LocalOutcomes output={output} />}
+        {shown === 'tables' && <LocalTables output={output} />}
+        {shown === 'checks' && <NonprofitChecks output={output} />}
+        {shown === 'funding' && <NonprofitFunding output={output} />}
+        {shown === 'forecast' && <ForecastStage output={output} />}
+        {shown === 'how' && <ForecastNotes output={output} />}
+      </Tabs>
+    </div>
+  )
+}
 
 /** A native disclosure styled to match the page. Closed by default so the page stays short. */
 function More({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
@@ -113,11 +145,8 @@ export default function ValuationPage() {
               })}
             </div>
 
-              <Step n={1} title="Your months" hint="Revenue for each month, and spending if you have it. Uploading another spreadsheet adds it to your list and switches to it.">
-                <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={fileMessage} busy={busy} summary={summary} review={review} />
-                <p className="mt-2 text-sm text-ink-muted">
-                  Rename, switch or delete spreadsheets on the <Link to="/dashboard/data" className="font-medium text-accent-ink hover:underline">Your data</Link> page.
-                </p>
+              <Step n={1} title="Your months" hint="Revenue for each month, and spending if you have it.">
+                <UploadCard manageLink={<Link to="/dashboard/data" className="font-medium text-accent-ink hover:underline">Manage spreadsheets</Link>} onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={fileMessage} busy={busy} summary={summary} review={review} />
                 <More title="Review or edit your months" hint="Type over any figure, or add and remove months.">
                   <MonthlyTable input={input} loadId={loadId} setInput={setInput} replaceInput={replaceInput} />
                 </More>
@@ -171,15 +200,7 @@ export default function ValuationPage() {
                       {active === 'cash' && <CashSafety output={current} />}
                       {active === 'alerts' && <Alerts output={current} />}
                       {active === 'customers' && <Customers />}
-                      {active === 'details' && (
-                        <div className="space-y-8 rounded-card border border-line bg-surface p-5">
-                          {current.input.orgType === 'local' ? <LocalDetails output={current} /> : <NonprofitDetails output={current} />}
-                          {current.input.orgType === 'nonprofit' && (
-                            <Card title="Income and spending forecast"><ForecastStage output={current} /></Card>
-                          )}
-                          <ForecastNotes output={current} />
-                        </div>
-                      )}
+                      {active === 'details' && <DetailsPanel output={current} />}
                     </Tabs>
                     <p className="mt-6 text-xs text-ink-muted">
                       An estimate built only from the figures you entered, not financial or legal advice. Forecasts assume the future behaves like your past; a new competitor, a lost contract or a one-off event will not be in them.

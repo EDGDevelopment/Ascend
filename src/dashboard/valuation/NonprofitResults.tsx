@@ -46,12 +46,9 @@ export function NonprofitCashStage({ output }: { output: ModelOutput }) {
   )
 }
 
-export function NonprofitDetails({ output }: { output: ModelOutput }) {
+export function NonprofitChecks({ output }: { output: ModelOutput }) {
   const N = output.nonprofit as NonprofitResult
-  const p = output.input.nonprofit
-  const f = output.forecast
   return (
-    <div className="space-y-8">
       <section>
         <h3 className="text-sm font-semibold">Checks on your finances</h3>
         <ul className="mt-3 space-y-2">
@@ -65,7 +62,14 @@ export function NonprofitDetails({ output }: { output: ModelOutput }) {
           })}
         </ul>
       </section>
+  )
+}
 
+export function NonprofitFunding({ output }: { output: ModelOutput }) {
+  const N = output.nonprofit as NonprofitResult
+  const p = output.input.nonprofit
+  const f = output.forecast
+  return (
       <section className="grid gap-8 lg:grid-cols-2">
         <div>
           <h3 className="text-sm font-semibold">Who funds you</h3>
@@ -95,6 +99,5 @@ export function NonprofitDetails({ output }: { output: ModelOutput }) {
           </p>
         </div>
       </section>
-    </div>
   )
 }

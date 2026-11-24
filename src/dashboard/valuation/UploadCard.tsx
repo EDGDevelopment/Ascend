@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Download, FileSpreadsheet } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { monthLabel } from '@/data/useDashboardData'
@@ -13,12 +13,16 @@ interface Props {
   summary?: string
   /** A file that looks like an update to a saved business, waiting for the owner's choice. */
   review?: UploadReview
+  /** Shown beside the summary once a spreadsheet is loaded. */
+  manageLink?: ReactNode
 }
 
 /** Drag a spreadsheet here, or click to browse. Works with the keyboard: the file input is real and focusable. */
-export function UploadCard({ onFile, onTemplate, message, busy, summary, review }: Props) {
+export function UploadCard({ onFile, onTemplate, message, busy, summary, review, manageLink }: Props) {
   const [over, setOver] = useState(false)
   const p = review?.pending ?? null
+  // With a spreadsheet already loaded, shrink the drop area to a single row.
+  const compact = !!summary && !busy
   return (
     <div>
       {p && review && (
@@ -43,11 +47,20 @@ export function UploadCard({ onFile, onTemplate, message, busy, summary, review 
         onDragOver={(e) => { e.preventDefault(); setOver(true) }}
         onDragLeave={() => setOver(false)}
         onDrop={(e) => { e.preventDefault(); setOver(false); onFile(e.dataTransfer.files?.[0]) }}
-        className={`flex cursor-pointer flex-col items-center gap-2 rounded-card border-2 border-dashed px-5 py-8 text-center transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent-bright ${over ? 'border-accent-bright bg-accent-soft' : 'border-line bg-surface hover:bg-sunken'}`}
+        className={`flex cursor-pointer items-center gap-3 rounded-card border-2 border-dashed text-left transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent-bright ${compact ? 'px-4 py-3' : 'flex-col px-5 py-8 text-center'} ${over ? 'border-accent-bright bg-accent-soft' : 'border-line bg-surface hover:bg-sunken'}`}
       >
-        <span aria-hidden="true" className="ramp-bg grid size-11 place-items-center rounded-full text-[#0b1310]"><FileSpreadsheet size={22} /></span>
-        <span className="text-base font-semibold">{busy ? 'Reading your spreadsheet and working out the forecast...' : 'Drop your spreadsheet here, or click to choose a file'}</span>
-        <span className="text-sm text-ink-muted">Excel (.xlsx) or CSV. One row per month, with revenue and, if you can, expenses.</span>
+        <span aria-hidden="true" className={`ramp-bg grid shrink-0 place-items-center rounded-full text-[#0b1310] ${compact ? 'size-9' : 'size-11'}`}><FileSpreadsheet size={compact ? 18 : 22} /></span>
+        {compact ? (
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold">{summary}</span>
+            <span className="block text-[13px] text-ink-muted">Drop or click to upload a newer spreadsheet</span>
+          </span>
+        ) : (
+          <>
+            <span className="text-base font-semibold">{busy ? 'Reading your spreadsheet and working out the forecast...' : 'Drop your spreadsheet here, or click to choose a file'}</span>
+            <span className="text-sm text-ink-muted">Excel (.xlsx) or CSV. One row per month, with revenue and, if you can, expenses.</span>
+          </>
+        )}
         <input type="file" accept=".xlsx,.csv" disabled={busy || !!p} className="sr-only" aria-label="Upload a spreadsheet" onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = '' }} />
       </label>
 
@@ -55,8 +68,9 @@ export function UploadCard({ onFile, onTemplate, message, busy, summary, review 
         <Button variant="secondary" size="sm" onClick={onTemplate}>
           <Download size={14} aria-hidden="true" /> Get the Excel template
         </Button>
+        {compact && manageLink && <span className="text-sm">{manageLink}</span>}
       </div>
-      <p role="status" className={`mt-2 text-sm ${message?.bad ? 'text-down' : 'text-ink-muted'}`}>{message?.text ?? summary}</p>
+      {(message || !compact) && <p role="status" className={`mt-2 text-sm ${message?.bad ? 'text-down' : 'text-ink-muted'}`}>{message?.text ?? summary}</p>}
     </div>
   )
 }

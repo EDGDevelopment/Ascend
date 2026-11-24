@@ -11,7 +11,7 @@ export interface TabDef {
  * Accessible tabs: arrow keys, Home and End move between them, and only the active tab is in the tab order.
  * On a phone the list scrolls sideways instead of wrapping.
  */
-export function Tabs({ tabs, active, onChange, label, children }: { tabs: TabDef[]; active: string; onChange: (id: string) => void; label: string; children: ReactNode }) {
+export function Tabs({ tabs, active, onChange, label, children, variant = 'card' }: { tabs: TabDef[]; active: string; onChange: (id: string) => void; label: string; children: ReactNode; variant?: 'card' | 'pill' }) {
   const refs = useRef<Record<string, HTMLButtonElement | null>>({})
   function onKey(e: React.KeyboardEvent, i: number) {
     const last = tabs.length - 1
@@ -23,7 +23,7 @@ export function Tabs({ tabs, active, onChange, label, children }: { tabs: TabDef
   }
   return (
     <div>
-      <div role="tablist" aria-label={label} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
+      <div role="tablist" aria-label={label} className={variant === 'pill' ? 'inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-sunken p-1' : '-mx-1 flex gap-2 overflow-x-auto px-1 pb-2'}>
         {tabs.map((t, i) => {
           const on = t.id === active
           return (
@@ -38,16 +38,18 @@ export function Tabs({ tabs, active, onChange, label, children }: { tabs: TabDef
               tabIndex={on ? 0 : -1}
               onClick={() => onChange(t.id)}
               onKeyDown={(e) => onKey(e, i)}
-              className={`relative shrink-0 rounded-lg border px-4 py-2.5 text-left transition-colors ${on ? 'border-accent-bright bg-accent-soft' : 'border-line bg-surface hover:bg-sunken'}`}
+              className={variant === 'pill'
+                ? `shrink-0 rounded-full px-6 py-2 text-sm font-semibold transition-all ${on ? 'ramp-bg text-[#0b1310] shadow-sm' : 'text-ink-muted hover:text-ink'}`
+                : `relative shrink-0 rounded-lg border px-4 py-2.5 text-left transition-colors ${on ? 'border-accent-bright bg-accent-soft' : 'border-line bg-surface hover:bg-sunken'}`}
             >
-              {on && <span aria-hidden="true" className="ramp-bg absolute inset-x-3 top-0 h-0.5 rounded-full" />}
-              <span className={`block text-sm font-semibold ${on ? 'text-accent-ink' : ''}`}>{t.label}</span>
-              {t.hint && <span className="hidden text-xs text-ink-muted lg:block">{t.hint}</span>}
+              {on && variant === 'card' && <span aria-hidden="true" className="ramp-bg absolute inset-x-3 top-0 h-0.5 rounded-full" />}
+              <span className={variant === 'pill' ? '' : `block text-sm font-semibold ${on ? 'text-accent-ink' : ''}`}>{t.label}</span>
+              {t.hint && variant === 'card' && <span className="hidden text-xs text-ink-muted lg:block">{t.hint}</span>}
             </button>
           )
         })}
       </div>
-      <div role="tabpanel" id={`panel-${active}`} aria-labelledby={`tab-${active}`} tabIndex={0} className="mt-4 focus:outline-none">
+      <div role="tabpanel" id={`panel-${active}`} aria-labelledby={`tab-${active}`} tabIndex={0} className="mt-6 focus:outline-none">
         {children}
       </div>
     </div>

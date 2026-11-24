@@ -68,6 +68,7 @@ export default function ValuationPage() {
   const { ready, active, input, output, source, running, error, saveWarning, loadId, setInput, replaceInput, run } = useValuation()
   const { upload, message: fileMessage, busy, review } = useUpload()
   const [tab, setTab] = useState('overview')
+  const [view, setView] = useState<'setup' | 'results'>(output ? 'results' : 'setup')
 
   if (!ready) return <p role="status" className="py-10 text-center text-sm text-ink-muted">Loading your data...</p>
   if (!active) return <UploadPrompt />
@@ -78,104 +79,123 @@ export default function ValuationPage() {
   const current = output && output.input.orgType === input.orgType ? output : null
   const stale = current !== null && JSON.stringify(current.input) !== JSON.stringify(input)
 
+  const VIEWS: TabDef[] = [
+    { id: 'setup', label: 'Your numbers' },
+    { id: 'results', label: 'Your results' },
+  ]
+
   return (
-    <div className="mx-auto max-w-[1040px] space-y-10">
-      <div role="radiogroup" aria-label="What kind of organisation is this?" className="grid gap-3 sm:grid-cols-2">
-        {TYPES.map((t) => {
-          const on = input.orgType === t.id
-          return (
-            <button
-              key={t.id}
-              type="button"
-              role="radio"
-              aria-checked={on}
-              onClick={() => {
-                if (on) return
-                setInput({ ...input, orgType: t.id })
-                setTab('overview')
-              }}
-              className={`relative overflow-hidden rounded-card border p-4 text-left transition-colors ${on ? 'border-accent-bright bg-accent-soft' : 'border-line bg-surface hover:bg-sunken'}`}
-            >
-              {on && <span aria-hidden="true" className="ramp-bg absolute inset-x-0 top-0 h-1" />}
-              <span className={`block text-base font-semibold ${on ? 'text-accent-ink' : ''}`}>{t.label}</span>
-              <span className="mt-0.5 block text-sm text-ink-muted">{t.blurb}</span>
-            </button>
-          )
-        })}
-      </div>
+    <div className="mx-auto max-w-[1040px]">
+      <Tabs tabs={VIEWS} active={view} onChange={(id) => setView(id as 'setup' | 'results')} label="Financial model sections" variant="pill">
+        {view === 'setup' ? (
+          <div className="space-y-10">
+            <div role="radiogroup" aria-label="What kind of organisation is this?" className="grid gap-3 sm:grid-cols-2">
+              {TYPES.map((t) => {
+                const on = input.orgType === t.id
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={on}
+                    onClick={() => {
+                      if (on) return
+                      setInput({ ...input, orgType: t.id })
+                      setTab('overview')
+                    }}
+                    className={`relative overflow-hidden rounded-card border p-4 text-left transition-colors ${on ? 'border-accent-bright bg-accent-soft' : 'border-line bg-surface hover:bg-sunken'}`}
+                  >
+                    {on && <span aria-hidden="true" className="ramp-bg absolute inset-x-0 top-0 h-1" />}
+                    <span className={`block text-base font-semibold ${on ? 'text-accent-ink' : ''}`}>{t.label}</span>
+                    <span className="mt-0.5 block text-sm text-ink-muted">{t.blurb}</span>
+                  </button>
+                )
+              })}
+            </div>
 
-      <Step n={1} title="Your months" hint="Revenue for each month, and spending if you have it. Uploading another spreadsheet adds it to your list and switches to it.">
-        <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={fileMessage} busy={busy} summary={summary} review={review} />
-        <p className="mt-2 text-sm text-ink-muted">
-          Rename, switch or delete spreadsheets on the <Link to="/dashboard/data" className="font-medium text-accent-ink hover:underline">Your data</Link> page.
-        </p>
-        <More title="Review or edit your months" hint="Type over any figure, or add and remove months.">
-          <MonthlyTable input={input} loadId={loadId} setInput={setInput} replaceInput={replaceInput} />
-        </More>
-      </Step>
+              <Step n={1} title="Your months" hint="Revenue for each month, and spending if you have it. Uploading another spreadsheet adds it to your list and switches to it.">
+                <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={fileMessage} busy={busy} summary={summary} review={review} />
+                <p className="mt-2 text-sm text-ink-muted">
+                  Rename, switch or delete spreadsheets on the <Link to="/dashboard/data" className="font-medium text-accent-ink hover:underline">Your data</Link> page.
+                </p>
+                <More title="Review or edit your months" hint="Type over any figure, or add and remove months.">
+                  <MonthlyTable input={input} loadId={loadId} setInput={setInput} replaceInput={replaceInput} />
+                </More>
+              </Step>
 
-      <Step n={2} title={input.orgType === 'local' ? 'A few quick questions' : 'One quick question'} hint="Anything you skip gets a sensible default.">
-        <div className="max-w-md pb-5">
-          <Field label={input.orgType === 'nonprofit' ? 'Organisation name' : 'Business name'} value={input.companyName} onChange={(e) => setInput({ ...input, companyName: e.target.value })} placeholder="Shown on your dashboards" />
-        </div>
-        {input.orgType === 'local' ? <LocalQuestions input={input} loadId={loadId} setInput={setInput} /> : <NonprofitQuestions input={input} loadId={loadId} setInput={setInput} replaceInput={replaceInput} />}
-        <More title="More detail" hint="Optional. Makes the answer sharper if you know these.">
-          {input.orgType === 'local' ? <LocalMore input={input} loadId={loadId} setInput={setInput} /> : <NonprofitMore input={input} loadId={loadId} setInput={setInput} replaceInput={replaceInput} />}
-        </More>
-      </Step>
-
-      <Step n={3} title="See your forecast">
-        <div className="flex flex-wrap items-center gap-4">
-          <Button size="lg" className="ramp-bg !text-[#0b1310] shadow-none hover:brightness-110" onClick={() => void run()} disabled={running}>
-            <Play size={18} aria-hidden="true" /> {running ? 'Working it out...' : current ? 'Run again' : 'Show my forecast'}
-          </Button>
-          {stale && !running && <span className="text-sm text-warn">You changed something. Run again to update.</span>}
-          {current && !stale && !running && (
-            <span className="text-sm text-ink-muted">Saved. Your dashboards now use these figures{source ? ` (worked out ${source === 'server' ? 'on the server' : 'in your browser'})` : ''}.</span>
-          )}
-        </div>
-        {error && (
-          <p role="alert" className="mt-4 flex items-start gap-2 rounded-lg border border-line bg-down-soft px-4 py-3 text-sm text-down">
-            <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" /> {error}
-          </p>
-        )}
-        {saveWarning && !error && <p role="status" className="mt-3 text-sm text-warn">Worked out, but not saved to your account yet ({saveWarning}). It is kept in this browser.</p>}
-      </Step>
-
-      {current && (() => {
-        const tabs = current.input.orgType === 'local' ? LOCAL_TABS : NONPROFIT_TABS
-        const active = tabs.some((t) => t.id === tab) ? tab : 'overview'
-        return (
-          <div className={stale ? 'opacity-60' : ''} aria-live="polite">
-            <Tabs tabs={tabs} active={active} onChange={setTab} label="Your toolkit">
-              {active === 'overview' && (
-                <div className="space-y-6">
-                  {current.input.orgType === 'local' ? <LocalHero output={current} /> : <NonprofitHero output={current} />}
-                  {current.input.orgType === 'local' ? <ForecastStage output={current} /> : <NonprofitCashStage output={current} />}
-                  <Insights output={current} />
+              <Step n={2} title={input.orgType === 'local' ? 'A few quick questions' : 'One quick question'} hint="Anything you skip gets a sensible default.">
+                <div className="max-w-md pb-5">
+                  <Field label={input.orgType === 'nonprofit' ? 'Organisation name' : 'Business name'} value={input.companyName} onChange={(e) => setInput({ ...input, companyName: e.target.value })} placeholder="Shown on your dashboards" />
                 </div>
-              )}
-              {active === 'whatif' && <WhatIf output={current} />}
-              {active === 'breakeven' && <BreakEven output={current} />}
-              {active === 'cash' && <CashSafety output={current} />}
-              {active === 'alerts' && <Alerts output={current} />}
-              {active === 'customers' && <Customers />}
-              {active === 'details' && (
-                <div className="space-y-8 rounded-card border border-line bg-surface p-5">
-                  {current.input.orgType === 'local' ? <LocalDetails output={current} /> : <NonprofitDetails output={current} />}
-                  {current.input.orgType === 'nonprofit' && (
-                    <Card title="Income and spending forecast"><ForecastStage output={current} /></Card>
+                {input.orgType === 'local' ? <LocalQuestions input={input} loadId={loadId} setInput={setInput} /> : <NonprofitQuestions input={input} loadId={loadId} setInput={setInput} replaceInput={replaceInput} />}
+                <More title="More detail" hint="Optional. Makes the answer sharper if you know these.">
+                  {input.orgType === 'local' ? <LocalMore input={input} loadId={loadId} setInput={setInput} /> : <NonprofitMore input={input} loadId={loadId} setInput={setInput} replaceInput={replaceInput} />}
+                </More>
+              </Step>
+
+              <Step n={3} title="See your forecast">
+                <div className="flex flex-wrap items-center gap-4">
+                  <Button size="lg" className="ramp-bg !text-[#0b1310] shadow-none hover:brightness-110" onClick={() => void run().then(() => { setView('results'); window.scrollTo({ top: 0, behavior: 'smooth' }) })} disabled={running}>
+                    <Play size={18} aria-hidden="true" /> {running ? 'Working it out...' : current ? 'Run again' : 'Show my forecast'}
+                  </Button>
+                  {stale && !running && <span className="text-sm text-warn">You changed something. Run again to update.</span>}
+                  {current && !stale && !running && (
+                    <span className="text-sm text-ink-muted">Saved. Your dashboards now use these figures{source ? ` (worked out ${source === 'server' ? 'on the server' : 'in your browser'})` : ''}.</span>
                   )}
-                  <ForecastNotes output={current} />
                 </div>
-              )}
-            </Tabs>
-            <p className="mt-6 text-xs text-ink-muted">
-              An estimate built only from the figures you entered, not financial or legal advice. Forecasts assume the future behaves like your past; a new competitor, a lost contract or a one-off event will not be in them.
-            </p>
+                {error && (
+                  <p role="alert" className="mt-4 flex items-start gap-2 rounded-lg border border-line bg-down-soft px-4 py-3 text-sm text-down">
+                    <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" /> {error}
+                  </p>
+                )}
+                {saveWarning && !error && <p role="status" className="mt-3 text-sm text-warn">Worked out, but not saved to your account yet ({saveWarning}). It is kept in this browser.</p>}
+              </Step>
           </div>
-        )
-      })()}
+        ) : current ? (
+          <div>
+              {current && (() => {
+                const tabs = current.input.orgType === 'local' ? LOCAL_TABS : NONPROFIT_TABS
+                const active = tabs.some((t) => t.id === tab) ? tab : 'overview'
+                return (
+                  <div className={stale ? 'opacity-60' : ''} aria-live="polite">
+                    <Tabs tabs={tabs} active={active} onChange={setTab} label="Your toolkit">
+                      {active === 'overview' && (
+                        <div className="space-y-6">
+                          {current.input.orgType === 'local' ? <LocalHero output={current} /> : <NonprofitHero output={current} />}
+                          {current.input.orgType === 'local' ? <ForecastStage output={current} /> : <NonprofitCashStage output={current} />}
+                          <Insights output={current} />
+                        </div>
+                      )}
+                      {active === 'whatif' && <WhatIf output={current} />}
+                      {active === 'breakeven' && <BreakEven output={current} />}
+                      {active === 'cash' && <CashSafety output={current} />}
+                      {active === 'alerts' && <Alerts output={current} />}
+                      {active === 'customers' && <Customers />}
+                      {active === 'details' && (
+                        <div className="space-y-8 rounded-card border border-line bg-surface p-5">
+                          {current.input.orgType === 'local' ? <LocalDetails output={current} /> : <NonprofitDetails output={current} />}
+                          {current.input.orgType === 'nonprofit' && (
+                            <Card title="Income and spending forecast"><ForecastStage output={current} /></Card>
+                          )}
+                          <ForecastNotes output={current} />
+                        </div>
+                      )}
+                    </Tabs>
+                    <p className="mt-6 text-xs text-ink-muted">
+                      An estimate built only from the figures you entered, not financial or legal advice. Forecasts assume the future behaves like your past; a new competitor, a lost contract or a one-off event will not be in them.
+                    </p>
+                  </div>
+                )
+              })()}
+          </div>
+        ) : (
+          <div className="rounded-card border border-line bg-surface p-8 text-center">
+            <p className="text-[15px] font-semibold">No results yet</p>
+            <p className="mt-1 text-sm text-ink-muted">Run your forecast and the results show up here.</p>
+            <Button className="mt-4" onClick={() => setView('setup')}>Go to your numbers</Button>
+          </div>
+        )}
+      </Tabs>
     </div>
   )
 }

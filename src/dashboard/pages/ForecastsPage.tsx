@@ -25,36 +25,18 @@ export default function ForecastsPage() {
 
   return (
     <div className="mx-auto max-w-[1280px] space-y-6">
-      <div className="grid gap-6 xl:grid-cols-3">
-        <Card className="xl:col-span-2" title={`${metricLabels[shown]}, next 90 days`} action={<MetricTabs value={shown} onChange={setMetric} available={data.metrics} />}>
-          <ForecastChart points={points} height={340} scenario={scenario} />
-        </Card>
-
-        <Card title="Scenario" subtitle="Adjust expected demand">
-          <label htmlFor="scenario" className="flex items-baseline justify-between text-[13px] text-ink-muted">
-            Demand change
-            <span className="tabular text-xl font-semibold text-accent-ink">{shift === 0 ? 'Baseline' : formatPercent(shift, 0)}</span>
-          </label>
-          <input
-            id="scenario"
-            type="range"
-            min={-20}
-            max={20}
-            step={1}
-            value={shift}
-            onChange={(e) => setShift(Number(e.target.value))}
-            className="mt-4 w-full"
-          />
-          <div className="mt-1 flex justify-between text-xs text-ink-faint">
-            <span>-20%</span>
-            <span>+20%</span>
-          </div>
-          <Button variant="secondary" size="sm" className="mt-5" onClick={() => setShift(0)} disabled={shift === 0}>
+      <Card title={`${metricLabels[shown]}, next 90 days`} action={<MetricTabs value={shown} onChange={setMetric} available={data.metrics} />}>
+        <ForecastChart points={points} height={340} scenario={scenario} />
+        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-line-soft pt-4">
+          <label htmlFor="scenario" className="text-[13px] font-medium text-ink-muted">Demand change</label>
+          <input id="scenario" type="range" min={-20} max={20} step={1} value={shift} onChange={(e) => setShift(Number(e.target.value))} className="min-w-[160px] flex-1" />
+          <span className="tabular w-20 text-right text-base font-semibold text-accent-ink">{shift === 0 ? 'Baseline' : formatPercent(shift, 0)}</span>
+          <Button variant="secondary" size="sm" onClick={() => setShift(0)} disabled={shift === 0}>
             <RotateCcw size={14} aria-hidden="true" /> Reset
           </Button>
-          <p className="mt-5 text-xs text-ink-faint">Illustrative: this slider only scales the chart and table. Use What if on the Financial model page for a full recalculation.</p>
-        </Card>
-      </div>
+        </div>
+        <p className="mt-2 text-xs text-ink-faint">Illustrative: this slider only scales the chart and table. Use What if on the Financial model page for a full recalculation.</p>
+      </Card>
 
       <Card title="Forecast detail" padded={false}>
         <div className="mt-4 overflow-x-auto">

@@ -84,10 +84,6 @@ export default function DataSourcesPage() {
 
   return (
     <div className="mx-auto max-w-[900px] space-y-6">
-      <Card title="Add another spreadsheet" subtitle="It is added to your list and becomes the one the dashboards use.">
-        <UploadCard onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={message} busy={busy} review={review} />
-      </Card>
-
       {error && (
         <p role="alert" className="rounded-lg border border-line bg-down-soft px-4 py-3 text-sm text-down">
           {active?.name ?? 'Your spreadsheet'} was added but its forecast could not be worked out: {error}{' '}
@@ -95,17 +91,17 @@ export default function DataSourcesPage() {
         </p>
       )}
 
-      <Card title="Your spreadsheets" subtitle="The dashboards show whichever one is marked In use." padded={false}>
+      <Card title="Your spreadsheets" subtitle="The dashboards show whichever one is marked In use. To correct figures for it, open the Financial model page." padded={false}>
         <ul className="mt-3 divide-y divide-line-soft border-t border-line-soft">
           {datasets.map((d) => (
             <Row key={d.id} d={d} isActive={d.id === active?.id} />
           ))}
         </ul>
+        <div className="border-t border-line-soft p-5">
+          <UploadCard compact onFile={(f) => void upload(f, input.orgType)} onTemplate={() => void downloadTemplate(input.orgType)} message={message} busy={busy} review={review} />
+        </div>
       </Card>
       {saveWarning && <p role="status" className="text-sm text-warn">Not saved to your account yet ({saveWarning}). Your spreadsheets are kept in this browser.</p>}
-      <p className="text-sm text-ink-muted">
-        To correct figures or change details for the one in use, open the <Link to="/dashboard/valuation" className="font-medium text-accent-ink hover:underline">Financial model</Link> page.
-      </p>
     </div>
   )
 }

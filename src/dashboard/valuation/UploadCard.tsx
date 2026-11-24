@@ -15,14 +15,16 @@ interface Props {
   review?: UploadReview
   /** Shown beside the summary once a spreadsheet is loaded. */
   manageLink?: ReactNode
+  /** Force the one-row drop area. The text is `summary`, or a short default. */
+  compact?: boolean
 }
 
 /** Drag a spreadsheet here, or click to browse. Works with the keyboard: the file input is real and focusable. */
-export function UploadCard({ onFile, onTemplate, message, busy, summary, review, manageLink }: Props) {
+export function UploadCard({ onFile, onTemplate, message, busy, summary, review, manageLink, compact: forceCompact }: Props) {
   const [over, setOver] = useState(false)
   const p = review?.pending ?? null
   // With a spreadsheet already loaded, shrink the drop area to a single row.
-  const compact = !!summary && !busy
+  const compact = (!!summary || !!forceCompact) && !busy
   return (
     <div>
       {p && review && (
@@ -52,8 +54,8 @@ export function UploadCard({ onFile, onTemplate, message, busy, summary, review,
         <span aria-hidden="true" className={`ramp-bg grid shrink-0 place-items-center rounded-full text-[#0b1310] ${compact ? 'size-9' : 'size-11'}`}><FileSpreadsheet size={compact ? 18 : 22} /></span>
         {compact ? (
           <span className="min-w-0">
-            <span className="block text-sm font-semibold">{summary}</span>
-            <span className="block text-[13px] text-ink-muted">Drop or click to upload a newer spreadsheet</span>
+            <span className="block text-sm font-semibold">{summary ?? 'Add another spreadsheet'}</span>
+            <span className="block text-[13px] text-ink-muted">{summary ? 'Drop or click to upload a newer spreadsheet' : 'Drop a file or click to choose one. It becomes the one your dashboards use.'}</span>
           </span>
         ) : (
           <>

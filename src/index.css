@@ -276,3 +276,56 @@
 @media (prefers-reduced-motion: no-preference) {
   .fan-line { animation: fan-in 450ms ease-out both; animation-delay: calc(var(--i, 0) * 3ms); }
 }
+
+/*
+ * Printing and saving as PDF. Always light, whatever theme is on screen, so a dark-mode user still gets
+ * black text on white. The tripled :root beats the theme selectors above.
+ */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  :root:root:root {
+    --color-page: #ffffff;
+    --color-surface: #ffffff;
+    --color-raised: #ffffff;
+    --color-sunken: #f1f4f2;
+    --color-line: #d6dcd7;
+    --color-line-soft: #e6ebe7;
+    --color-ink: #161c19;
+    --color-ink-soft: #2a3330;
+    --color-ink-muted: #4e5955;
+    --color-ink-faint: #66716c;
+    --color-accent: #1f6b4f;
+    --color-accent-strong: #185640;
+    --color-accent-bright: #2e8a67;
+    --color-accent-soft: #e1eee7;
+    --color-accent-ink: #1f6b4f;
+    --color-series: #1f6b4f;
+    --color-series-2: #2e8a67;
+    --color-up: #1f7a4d;
+    --color-down: #b83325;
+    --color-warn: #8f5d0a;
+    --color-warn-soft: #fbf1dc;
+    --color-down-soft: #fbe7e4;
+    color-scheme: light;
+  }
+  html,
+  body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 12px;
+  }
+  /* Keep a card, table row or figure together rather than splitting it across two pages. */
+  section,
+  tr,
+  figure,
+  li {
+    break-inside: avoid;
+  }
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

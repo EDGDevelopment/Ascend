@@ -105,10 +105,11 @@ export default function FundingPage() {
         </Button>
       </div>
 
-      <article className="space-y-6 rounded-card border border-line bg-surface p-6 sm:p-9 print:border-0 print:p-0">
+      <article className="relative space-y-6 overflow-hidden rounded-card border border-line bg-surface p-6 pt-8 sm:p-9 sm:pt-11 print:overflow-visible print:border-0 print:p-0">
+        <span aria-hidden="true" className="ramp-bg absolute inset-x-0 top-0 h-1.5 print:hidden" />
         <header>
           <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">Financial snapshot</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">{name}</h1>
+          <h1 className="mt-1 font-display text-3xl font-semibold tracking-tight">{name}</h1>
           <p className="mt-1 text-sm text-ink-muted">
             {output.input.orgType === 'nonprofit' ? 'Non-profit' : 'Local business'} · {rows.length} months of results, {monthLabel(rows[0].month)} to {monthLabel(rows[rows.length - 1].month)} · Prepared {new Date().toLocaleDateString()}
           </p>

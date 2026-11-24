@@ -7,13 +7,10 @@ import {
   Calculator,
   LogOut,
   Menu,
-  Network,
   Printer,
   Share2,
-  Flag,
-  Landmark,
+  FileText,
   Sparkles,
-  Target,
   X,
 } from 'lucide-react'
 import { useAuth } from '@/auth/useAuth'
@@ -26,24 +23,18 @@ const nav = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/dashboard/forecasts', label: 'Forecasts', icon: LineChart },
   { to: '/dashboard/valuation', label: 'Financial model', icon: Calculator },
-  { to: '/dashboard/opportunities', label: 'Opportunities', icon: Sparkles },
+  { to: '/dashboard/growth', label: 'Growth', icon: Sparkles },
+  { to: '/dashboard/reports', label: 'Reports', icon: FileText },
   { to: '/dashboard/data', label: 'Your data', icon: Database },
-  { to: '/dashboard/track-record', label: 'Track record', icon: Target },
-  { to: '/dashboard/goals', label: 'Goals', icon: Flag },
-  { to: '/dashboard/funding', label: 'Funding readiness', icon: Landmark },
-  { to: '/dashboard/model', label: 'Model', icon: Network },
 ]
 
 const titles: Record<string, string> = {
   '/dashboard': 'Overview',
   '/dashboard/forecasts': 'Forecasts',
   '/dashboard/valuation': 'Financial model',
-  '/dashboard/opportunities': 'Opportunities',
+  '/dashboard/growth': 'Growth',
+  '/dashboard/reports': 'Reports',
   '/dashboard/data': 'Your data',
-  '/dashboard/track-record': 'Track record',
-  '/dashboard/goals': 'Goals',
-  '/dashboard/funding': 'Funding readiness',
-  '/dashboard/model': 'Model',
 }
 
 function initials(name: string) {
@@ -121,7 +112,9 @@ export default function DashboardLayout() {
   const location = useLocation()
   const [drawer, setDrawer] = useState(false)
   const [sharing, setSharing] = useState(false)
-  const title = titles[location.pathname.replace(/\/$/, '')] ?? 'Dashboard'
+  // A section's own pages (Growth > Goals) share the section's title.
+  const path = location.pathname.replace(/\/$/, '')
+  const title = titles[path] ?? titles[Object.keys(titles).find((k) => k !== '/dashboard' && path.startsWith(k + '/')) ?? ''] ?? 'Dashboard'
 
   // Close the mobile drawer on Escape. Link clicks close it through onNavigate.
   useEffect(() => {
@@ -170,6 +163,7 @@ export default function DashboardLayout() {
             <Menu size={20} />
           </button>
           <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
+          <span className="ml-auto hidden text-xs text-ink-faint print:block">Ascend · printed {new Date().toLocaleDateString()}</span>
           <span className="ml-auto rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted print:hidden">Early preview</span>
           <button type="button" onClick={() => setSharing(true)} aria-label="Share a read-only link" title="Share a read-only link" className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-ink-muted hover:bg-sunken hover:text-ink print:hidden">
             <Share2 size={16} aria-hidden="true" /> <span className="hidden sm:inline">Share</span>

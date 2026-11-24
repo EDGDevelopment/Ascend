@@ -63,7 +63,7 @@ export default function TrackRecordPage() {
       </Card>
 
       {withMonths.map((s) => (
-        <Card key={s.lastMonth} title={`Forecast from ${monthLabel(s.lastMonth)}`} subtitle={`Made ${new Date(s.madeAt).toLocaleDateString()}. ${s.months.length} of ${s.horizon} months have real results.`}>
+        <Card key={s.lastMonth} title={`Forecast from ${monthLabel(s.lastMonth)}`} subtitle={`Made ${new Date(s.madeAt).toLocaleDateString()}. ${s.months.length} of ${s.horizon} months have real results.`} action={<span className="rounded-full bg-sunken px-2.5 py-1 text-xs font-medium text-ink-soft">{s.months.filter((m) => m.inRange).length} of {s.months.length} inside range</span>}>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[520px] text-left text-sm">
               <thead>

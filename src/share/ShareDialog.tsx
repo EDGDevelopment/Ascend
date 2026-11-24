@@ -24,6 +24,8 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  // The link just made, shown in a box so it can be copied by hand if the browser blocks the clipboard.
+  const [fresh, setFresh] = useState<string | null>(null)
 
   const refresh = useCallback(async () => {
     if (userId) setLinks(await listShares(userId))
@@ -50,7 +52,7 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
       setCopied(token)
       setTimeout(() => setCopied((c) => (c === token ? null : c)), 2000)
     } catch {
-      setError('Could not copy automatically. Use the Copy button next to the link below.')
+      // Clipboard blocked: the link stays visible in its box to select and copy.
     }
   }
 
@@ -60,6 +62,7 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
     setError(null)
     try {
       const link = await createShare(userId, active, days)
+      setFresh(link.token)
       await refresh()
       await copy(link.token)
     } catch (e) {
@@ -72,6 +75,7 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
   async function revoke(token: string) {
     if (!userId) return
     await revokeShare(userId, token)
+    setFresh((f) => (f === token ? null : f))
     await refresh()
   }
 
@@ -109,6 +113,20 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
             </p>
             {!sharesAreOnline() && <p className="mt-2 rounded-lg bg-warn-soft px-3 py-2 text-xs text-warn">Demo mode: links only open in this browser. Connect Supabase to share with other people.</p>}
           </>
+        )}
+
+        {fresh && (
+          <div className="mt-4 rounded-lg border border-accent-bright bg-accent-soft p-3">
+            <p className="flex items-center gap-1.5 text-sm font-medium text-accent-ink">
+              <Check size={15} aria-hidden="true" /> {copied === fresh ? 'Link copied' : 'Link ready'}
+            </p>
+            <div className="mt-2 flex gap-2">
+              <input readOnly value={shareUrl(fresh)} aria-label="Share link" onFocus={(e) => e.currentTarget.select()} className="h-9 min-w-0 flex-1 rounded-lg border border-line bg-surface px-3 text-[13px] text-ink-soft" />
+              <Button size="sm" className="h-9" onClick={() => void copy(fresh)}>
+                <Copy size={14} aria-hidden="true" /> Copy
+              </Button>
+            </div>
+          </div>
         )}
 
         {error && <p role="alert" className="mt-3 rounded-lg bg-down-soft px-3 py-2 text-sm text-down">{error}</p>}

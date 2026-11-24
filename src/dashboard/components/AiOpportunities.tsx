@@ -159,7 +159,7 @@ export function AiOpportunities() {
                       Ask about this
                     </button>
                     {tracked.has(o.title) || (active?.goals ?? []).some((g) => g.title === o.title) ? (
-                      <Link to="/dashboard/goals" className="ml-4 mt-3 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-muted hover:underline">
+                      <Link to="/dashboard/growth/goals" className="ml-4 mt-3 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-muted hover:underline">
                         <Check size={14} aria-hidden="true" />
                         Tracking this goal
                       </Link>

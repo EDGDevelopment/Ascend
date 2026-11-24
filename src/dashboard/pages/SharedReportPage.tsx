@@ -92,16 +92,17 @@ export default function SharedReportPage() {
           <ReadOnlyContext.Provider value={true}>
             <div className="px-4 pt-4 sm:px-8 print:hidden">
               <div className="mx-auto max-w-[960px]">
-                <h1 className="text-lg font-semibold tracking-tight">{dataset.input.companyName.trim() || dataset.name}</h1>
-                <p className="text-[13px] text-ink-faint">Figures as of {new Date(dataset.updatedAt).toLocaleDateString()}. A snapshot shared by the owner: it does not update.</p>
-                <nav aria-label="Report sections" className="mt-3 flex flex-wrap gap-1.5">
+                <p className="rounded-lg bg-sunken px-3.5 py-2 text-[13px] text-ink-muted">
+                  <span className="font-medium text-ink">{dataset.input.companyName.trim() || dataset.name}</span> · a read-only snapshot as of {new Date(dataset.updatedAt).toLocaleDateString()}. It does not update.
+                </p>
+                <nav aria-label="Report sections" className="mt-3 flex gap-1.5 overflow-x-auto pb-1">
                   {TABS.map((t) => (
                     <button
                       key={t.id}
                       type="button"
                       onClick={() => setTab(t.id)}
                       aria-current={tab === t.id ? 'page' : undefined}
-                      className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${tab === t.id ? 'bg-accent-soft text-accent-ink' : 'text-ink-muted hover:bg-sunken hover:text-ink'}`}
+                      className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${tab === t.id ? 'bg-accent-soft text-accent-ink' : 'text-ink-muted hover:bg-sunken hover:text-ink'}`}
                     >
                       {t.label}
                     </button>
